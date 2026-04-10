@@ -3,58 +3,96 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Linear Equation Evaluation</title>
+<title>Evaluation for Queen Sasha</title>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css"/>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Lora:ital,wght@0,400;0,500;1,400&display=swap');
 
 :root {
-  --bb-dark:      #1c1c1e;
-  --bb-dark2:     #2c2c2e;
-  --bb-dark3:     #3a3a3c;
-  --bb-border-hd: #48484a;
-  --bb-txt-hd:    #e5e7eb;
-  --bb-txt-dim:   #8d8d93;
-  --bb-blue:      #1a56db;
-  --bb-blue-h:    #1344b0;
-  --bb-blue-lt:   #eef3ff;
-  --bb-blue-bd:   #93c5fd;
-  --bg:           #f0eeeb;
-  --surface:      #ffffff;
-  --border:       #e8e6e1;
-  --border-dk:    #cac7c0;
-  --text:         #0f0f0e;
-  --text-s:       #2d2d2c;
-  --text-m:       #6b6860;
-  --answered:     #065f46;
-  --ans-bg:       #d1fae5;
-  --ans-bd:       #10b981;
-  --danger:       #c41c1c;
-  --danger-bg:    #fef2f2;
-  --danger-bd:    #f87171;
-  --mark:         #6d28d9;
-  --mark-bg:      #ede9fe;
-  --mark-bd:      #8b5cf6;
-  --radius:       10px;
-  --hdr-h:        52px;
-  --ftr-h:        58px;
-  --math-font:    'KaTeX_Main', 'Latin Modern Roman', 'Computer Modern Serif', 'CMU Serif', 'Times New Roman', serif;
-  --math-italic:  'KaTeX_Math', 'KaTeX_Main', 'Latin Modern Roman', 'Computer Modern Serif', 'CMU Serif', 'Times New Roman', serif;
+  /* Dark chrome */
+  --bb-dark:       #111113;
+  --bb-dark2:      #1a1a1d;
+  --bb-dark3:      #242428;
+  --bb-border-hd:  #2e2e33;
+  --bb-txt-hd:     #e4e4ea;
+  --bb-txt-dim:    #6a6a76;
+
+  /* Single accent — restrained blue */
+  --bb-blue:       #1a56db;
+  --bb-blue-h:     #1344b0;
+  --bb-blue-lt:    #f0f4ff;
+  --bb-blue-bd:    #a8bbf5;
+
+  /* Light surfaces — pure white */
+  --bg:            #f4f4f6;
+  --surface:       #ffffff;
+  --border:        #e0e0e6;
+  --border-dk:     #c2c2cc;
+
+  /* Text */
+  --text:          #0d0d11;
+  --text-s:        #1e1e26;
+  --text-m:        #6c6c7a;
+
+  /* States */
+  --answered:      #065f46;
+  --ans-bg:        #ecfdf5;
+  --ans-bd:        #6ee7b7;
+  --danger:        #b91c1c;
+  --danger-bg:     #fef2f2;
+  --danger-bd:     #fca5a5;
+  --mark:          #5b21b6;
+  --mark-bg:       #f5f3ff;
+  --mark-bd:       #a78bfa;
+
+  /* Geometry */
+  --radius:        8px;
+  --radius-lg:     12px;
+  --hdr-h:         52px;
+  --ftr-h:         60px;
+
+  /* Fonts */
+  --math-font:    'KaTeX_Main', 'Latin Modern Roman', 'CMU Serif', Georgia, serif;
+  --math-italic:  'KaTeX_Math', 'KaTeX_Main', 'CMU Serif', Georgia, serif;
   --prose-font:   'DM Sans', system-ui, sans-serif;
+  --serif-font:   'Lora', Georgia, serif;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { height: 100%; }
-body { font-family: var(--prose-font); background: var(--bg); color: var(--text); font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+body {
+  font-family: var(--prose-font);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 .screen { display: none; }
 .screen.active { display: flex; }
 .hidden { display: none !important; }
 
-/* ─── FRACTIONS ─── */
+/* ═══════════════════════════════════════════════════
+   FRACTIONS — alignment fix
+   ─────────────────────────────────────────────────
+   vertical-align:middle aligns the vertical midpoint
+   of the flex box with (baseline + x-height/2), which
+   places the vinculum at the mathematical axis — exactly
+   where it should sit relative to surrounding text.
+
+   The surrounding containers must have line-height ≥ 2.1
+   so the descending denominator has vertical room and
+   does not clip or crowd adjacent lines.
+═══════════════════════════════════════════════════ */
 .frac {
-  display: inline-flex; flex-direction: column; align-items: center;
-  vertical-align: -0.22em; margin: 0 0.08em; line-height: 1;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  vertical-align: middle;
+  margin: 0 0.1em;
+  line-height: 1;
   font-family: var(--math-font);
   font-weight: 400;
   text-rendering: geometricPrecision;
@@ -62,79 +100,159 @@ body { font-family: var(--prose-font); background: var(--bg); color: var(--text)
 }
 .frac .fnum,
 .frac .fden {
-  min-width: 1.2em;
+  min-width: 1.1em;
   padding: 0 0.18em;
   text-align: center;
-  line-height: 1.15;
+  line-height: 1.2;
 }
 .frac .fnum {
-  border-bottom: 1.35px solid currentColor;
-  font-size: .82em;
-  padding-bottom: 0.05em;
+  border-bottom: 1.2px solid currentColor;
+  font-size: .8em;
+  padding-bottom: 0.06em;
 }
 .frac .fden {
-  font-size: .82em;
-  padding-top: 0.05em;
+  font-size: .8em;
+  padding-top: 0.06em;
 }
 
 /* ═══════════════════════════════════════
    START SCREEN
 ═══════════════════════════════════════ */
-#screen-start { min-height: 100vh; align-items: center; justify-content: center; background: var(--bg); }
-.start-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 48px 56px; max-width: 480px; width: 100%; box-shadow: 0 8px 40px rgba(0,0,0,.1); text-align: center; }
-.start-logo { display: inline-block; background: var(--bb-blue); color: #fff; font-family: var(--math-font); font-weight: 500; font-size: 1.05rem; letter-spacing: .12em; padding: 6px 18px; border-radius: 5px; margin-bottom: 20px; }
-.start-title { font-family: var(--math-font); font-size: 1.9rem; font-weight: 400; margin-bottom: 8px; letter-spacing: -.01em; }
-.start-subtitle { color: var(--text-m); font-size: .88rem; margin-bottom: 36px; }
-.start-form { display: flex; flex-direction: column; gap: 12px; }
-.start-form label { text-align: left; font-weight: 500; font-size: .82rem; color: var(--text-m); margin-bottom: -4px; letter-spacing: .02em; }
-.start-form input { width: 100%; padding: 11px 15px; border: 1.5px solid var(--border); border-radius: var(--radius); font-family: inherit; font-size: .95rem; color: var(--text); background: var(--bg); outline: none; transition: border-color .15s, box-shadow .15s; }
+#screen-start {
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+}
+.start-card {
+  max-width: 420px;
+  width: 100%;
+  padding: 60px 48px 52px;
+  text-align: center;
+}
+.start-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-size: .67rem;
+  font-weight: 700;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--bb-blue);
+  margin-bottom: 20px;
+}
+.start-eyebrow-rule { width: 18px; height: 1px; background: currentColor; opacity: .45; }
+.start-title {
+  font-family: var(--serif-font);
+  font-size: 1.9rem;
+  font-weight: 400;
+  line-height: 1.26;
+  letter-spacing: -.02em;
+  color: var(--text);
+  margin-bottom: 9px;
+}
+.start-subtitle { color: var(--text-m); font-size: .86rem; margin-bottom: 12px; }
+.start-divider { width: 28px; height: 1px; background: var(--border-dk); margin: 0 auto 34px; }
+.start-form { display: flex; flex-direction: column; gap: 15px; text-align: left; }
+.start-field { display: flex; flex-direction: column; gap: 5px; }
+.start-form label {
+  font-size: .66rem; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--text-m);
+}
+.start-form input {
+  width: 100%; padding: 11px 14px;
+  border: 1.5px solid var(--border); border-radius: var(--radius);
+  font-family: var(--prose-font); font-size: .93rem;
+  color: var(--text); background: #ffffff; outline: none;
+  transition: border-color .15s, box-shadow .15s;
+}
 .start-form input:focus { border-color: var(--bb-blue); box-shadow: 0 0 0 3px rgba(26,86,219,.1); }
-#btn-start { margin-top: 8px; padding: 12px 24px; background: var(--bb-blue); color: #fff; border: none; border-radius: var(--radius); font-family: inherit; font-size: .95rem; font-weight: 600; cursor: pointer; transition: background .15s, transform .1s; }
-#btn-start:hover { background: var(--bb-blue-h); }
-#btn-start:active { transform: scale(.98); }
-.start-note { margin-top: 24px; font-size: .75rem; color: var(--text-m); font-style: italic; }
-.resume-banner { margin-top: 16px; background: #fff7ed; border: 1px solid #f59e0b; border-radius: 8px; padding: 10px 16px; font-size: .83rem; color: #b45309; display: none; }
+.start-form input::placeholder { color: #b0b0bc; }
+#btn-start {
+  margin-top: 4px; padding: 12px 20px; width: 100%;
+  background: var(--bb-blue); color: #fff; border: none;
+  border-radius: var(--radius); font-family: var(--prose-font);
+  font-size: .88rem; font-weight: 600; letter-spacing: .03em;
+  cursor: pointer; transition: background .15s, box-shadow .15s, transform .1s;
+}
+#btn-start:hover { background: var(--bb-blue-h); box-shadow: 0 4px 16px rgba(26,86,219,.22); }
+#btn-start:active { transform: scale(.99); }
+.start-note { margin-top: 28px; font-size: .72rem; color: var(--text-m); line-height: 1.65; }
+.resume-banner {
+  margin-top: 16px; background: #fffbeb;
+  border: 1px solid #fcd34d; border-radius: 7px;
+  padding: 10px 14px; font-size: .79rem; color: #92400e;
+  display: none; text-align: left; line-height: 1.55;
+}
 
 /* ═══════════════════════════════════════
    EXAM SCREEN
 ═══════════════════════════════════════ */
 #screen-exam { flex-direction: column; height: 100vh; overflow: hidden; }
 
-/* ── TOP HEADER ── */
+/* ── HEADER ── */
 .bb-hdr {
   height: var(--hdr-h); background: var(--bb-dark);
-  display: flex; align-items: center; padding: 0 20px; gap: 10px;
+  display: flex; align-items: center; padding: 0 20px; gap: 12px;
   flex-shrink: 0; z-index: 200;
-  border-bottom: 1px solid rgba(255,255,255,.05);
+  border-bottom: 1px solid rgba(255,255,255,.03);
 }
 .bb-hdr-left  { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
 .bb-hdr-ctr   { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
 .bb-hdr-right { display: flex; align-items: center; gap: 8px; flex: 1; justify-content: flex-end; }
-.bb-sect-label { color: #c9c8c5; font-size: .78rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; letter-spacing: .01em; }
-.bb-dir-btn { background: transparent; border: 1px solid #3a3a3c; border-radius: 5px; color: #7eb8f7; font-size: .72rem; font-weight: 600; padding: 4px 11px; cursor: pointer; font-family: inherit; white-space: nowrap; transition: background .15s; letter-spacing: .02em; }
-.bb-dir-btn:hover { background: rgba(255,255,255,.07); }
+
+.bb-sect-label {
+  color: #555560; font-size: .73rem; font-weight: 500;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; letter-spacing: .01em;
+}
+.bb-dir-btn {
+  background: transparent; border: 1px solid var(--bb-border-hd);
+  border-radius: 5px; color: #5e8fe0;
+  font-size: .67rem; font-weight: 700; padding: 4px 12px;
+  cursor: pointer; font-family: var(--prose-font);
+  white-space: nowrap; letter-spacing: .07em; text-transform: uppercase;
+  transition: background .15s;
+}
+.bb-dir-btn:hover { background: rgba(255,255,255,.06); }
 
 /* Timer */
-.bb-timer-wrap { display: flex; align-items: center; gap: 5px; }
-.bb-timer-num { background: #252527; border: 1px solid #3a3a3c; border-radius: 7px; padding: 5px 18px; color: #e5e7eb; font-size: .95rem; font-weight: 600; font-variant-numeric: tabular-nums; min-width: 80px; text-align: center; letter-spacing: .06em; transition: background .3s, border-color .3s, color .3s; }
-.bb-timer-num.warn { background: #3d2200; border-color: #ca8a04; color: #fde68a; }
-.bb-timer-num.crit { background: #3b0c0c; border-color: #dc2626; color: #fca5a5; }
-.bb-timer-num.ghost { color: #44444a; letter-spacing: .1em; }
-.bb-timer-tog { background: transparent; border: none; color: #5a5a62; font-size: .68rem; font-weight: 600; cursor: pointer; font-family: inherit; padding: 3px 6px; border-radius: 3px; transition: color .15s, background .15s; white-space: nowrap; }
+.bb-timer-wrap { display: flex; align-items: center; gap: 6px; }
+.bb-timer-num {
+  background: var(--bb-dark2); border: 1px solid var(--bb-border-hd);
+  border-radius: 6px; padding: 5px 16px; color: var(--bb-txt-hd);
+  font-size: .87rem; font-weight: 600; font-variant-numeric: tabular-nums;
+  min-width: 72px; text-align: center; letter-spacing: .1em;
+  transition: background .3s, border-color .3s, color .3s;
+}
+.bb-timer-num.warn { background: #261800; border-color: #a07000; color: #fde68a; }
+.bb-timer-num.crit { background: #220808; border-color: #b82020; color: #fca5a5; }
+.bb-timer-num.ghost { color: #2e2e34; letter-spacing: .1em; }
+.bb-timer-tog {
+  background: transparent; border: none; color: #363640;
+  font-size: .63rem; font-weight: 700; cursor: pointer;
+  font-family: var(--prose-font); padding: 3px 5px; border-radius: 3px;
+  transition: color .15s, background .15s;
+  white-space: nowrap; letter-spacing: .07em; text-transform: uppercase;
+}
 .bb-timer-tog:hover { color: var(--bb-txt-hd); background: rgba(255,255,255,.07); }
 
 /* Tool buttons */
-.bb-tool-btn { background: transparent; border: 1px solid #3a3a3c; border-radius: 6px; color: #c5c4c0; font-size: .72rem; font-weight: 500; padding: 6px 13px; cursor: pointer; font-family: inherit; white-space: nowrap; transition: background .15s, border-color .15s; display: flex; align-items: center; gap: 5px; letter-spacing: .01em; }
-.bb-tool-btn:hover { background: rgba(255,255,255,.07); border-color: #555; }
-.bb-tool-btn.active-tool { background: rgba(26,86,219,.2); border-color: #4a7de4; color: #93b8f8; }
-.bb-submit-btn { color: #f9a8a8; border-color: #5a1b1b; background: rgba(100,20,20,.22); }
-.bb-submit-btn:hover { background: rgba(180,30,30,.28) !important; border-color: #c04040; color: #ffc0c0; }
-
-/* ── MAIN CONTENT (split pane) ── */
-.bb-main {
-  flex: 1; display: flex; flex-direction: row;
-  overflow: hidden; min-height: 0; position: relative;
+.bb-tool-btn {
+  background: transparent; border: 1px solid var(--bb-border-hd);
+  border-radius: 6px; color: #7a7a86;
+  font-size: .67rem; font-weight: 600; padding: 6px 14px;
+  cursor: pointer; font-family: var(--prose-font); white-space: nowrap;
+  transition: background .15s, border-color .15s, color .15s;
+  display: flex; align-items: center; gap: 7px;
+  letter-spacing: .05em; text-transform: uppercase;
 }
+.bb-tool-btn:hover { background: rgba(255,255,255,.06); border-color: #44444c; color: var(--bb-txt-hd); }
+.bb-tool-btn.active-tool { background: rgba(26,86,219,.15); border-color: #3c68cc; color: #7ea8f6; }
+.bb-submit-btn { color: #cc7070; border-color: #321010; background: rgba(60,8,8,.15); }
+.bb-submit-btn:hover { background: rgba(120,16,16,.2) !important; border-color: #883030; color: #ffb4b4; }
+
+/* ── MAIN ── */
+.bb-main { flex: 1; display: flex; flex-direction: row; overflow: hidden; min-height: 0; position: relative; }
 
 /* ── CALCULATOR PANE ── */
 .calc-pane {
@@ -142,73 +260,88 @@ body { font-family: var(--prose-font); background: var(--bg); color: var(--text)
   background: #fff; border-right: 1px solid var(--border);
   display: flex; flex-direction: column; flex-shrink: 0; overflow: hidden;
 }
-.calc-pane-hd { background: #1c1c1e; color: #c9c8c5; font-size: .72rem; font-weight: 600; padding: 7px 14px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; letter-spacing: .03em; }
-.calc-pane-close { background: transparent; border: none; color: #6b6b72; font-size: .78rem; cursor: pointer; font-family: inherit; padding: 2px 8px; border-radius: 3px; transition: color .15s, background .15s; }
-.calc-pane-close:hover { color: #c9c8c5; background: rgba(255,255,255,.1); }
+.calc-pane-hd {
+  background: var(--bb-dark); color: #48484f;
+  font-size: .62rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+  padding: 9px 16px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
+}
+.calc-pane-close {
+  background: transparent; border: none; color: #404048;
+  font-size: .64rem; font-weight: 600; letter-spacing: .05em;
+  cursor: pointer; font-family: var(--prose-font); padding: 2px 8px; border-radius: 3px;
+  transition: color .15s, background .15s;
+}
+.calc-pane-close:hover { color: #7a7a86; background: rgba(255,255,255,.07); }
 #desmos-wrap { flex: 1; overflow: hidden; }
 
-/* ── RESIZE DIVIDER ── */
-.pane-divider { width: 5px; background: var(--border); cursor: col-resize; flex-shrink: 0; position: relative; transition: background .15s; z-index: 10; }
+/* ── DIVIDER ── */
+.pane-divider {
+  width: 4px; background: var(--border); cursor: col-resize;
+  flex-shrink: 0; position: relative; transition: background .15s; z-index: 10;
+}
 .pane-divider:hover, .pane-divider.dragging { background: var(--bb-blue); }
-.pane-divider::after { content: '⋮'; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); color: var(--text-m); font-size: .88rem; pointer-events: none; }
+.pane-divider::after {
+  content: ''; position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  width: 2px; height: 24px; background: currentColor; border-radius: 2px; opacity: .3;
+}
 
 /* ── QUESTION PANE ── */
 .q-pane {
   flex: 1; overflow-y: auto; min-width: 0;
   display: flex; flex-direction: column; align-items: center;
-  padding: 36px 32px 40px;
-  /* subtle scroll behavior */
-  scroll-behavior: smooth;
+  padding: 40px 28px 56px; background: var(--bg); scroll-behavior: smooth;
 }
-.q-pane::-webkit-scrollbar { width: 6px; }
+.q-pane::-webkit-scrollbar { width: 5px; }
 .q-pane::-webkit-scrollbar-track { background: transparent; }
-.q-pane::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
+.q-pane::-webkit-scrollbar-thumb { background: #d0d0d8; border-radius: 3px; }
 
 /* ── QUESTION CARD ── */
 .bb-q-card {
-  background: var(--surface);
-  border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0,0,0,.06), 0 4px 20px rgba(0,0,0,.07);
-  width: 100%; max-width: 700px;
-  display: flex; flex-direction: column;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 1px 2px rgba(0,0,0,.04), 0 4px 16px rgba(0,0,0,.05);
+  width: 100%; max-width: 720px; display: flex; flex-direction: column;
 }
-
 .bb-q-meta {
   display: flex; align-items: center; justify-content: space-between;
   padding: 14px 28px; border-bottom: 1px solid var(--border); gap: 12px;
 }
 .bb-q-num-badge {
-  background: #0f2744; color: #7eb8f7;
-  font-size: .7rem; font-weight: 600;
-  padding: 4px 14px; border-radius: 20px;
-  letter-spacing: .05em; white-space: nowrap;
+  font-size: .67rem; font-weight: 700;
+  letter-spacing: .09em; text-transform: uppercase;
+  color: var(--text-m); font-family: var(--prose-font);
 }
 .bb-mark-btn {
-  display: flex; align-items: center; gap: 5px;
-  background: transparent; border: 1.5px solid var(--border-dk);
+  display: flex; align-items: center; gap: 6px;
+  background: transparent; border: 1.5px solid var(--border);
   border-radius: 20px; padding: 4px 14px;
-  font-size: .7rem; font-weight: 600; color: var(--text-m);
-  cursor: pointer; font-family: inherit; white-space: nowrap; transition: all .15s;
-  letter-spacing: .02em;
+  font-size: .67rem; font-weight: 700;
+  letter-spacing: .04em; text-transform: uppercase;
+  color: var(--text-m); cursor: pointer; font-family: var(--prose-font);
+  white-space: nowrap; transition: all .15s;
 }
 .bb-mark-btn:hover { border-color: var(--mark-bd); color: var(--mark); background: var(--mark-bg); }
 .bb-mark-btn.marked { background: var(--mark-bg); border-color: var(--mark-bd); color: var(--mark); }
 
 /* ── QUESTION BODY ── */
-.bb-q-body { padding: 36px 44px 40px; }
+.bb-q-body { padding: 36px 40px 44px; }
 
 /* ── QUESTION TEXT ── */
-/* Prose text in clean sans-serif */
 .question-content {
   font-family: var(--prose-font);
-  font-size: 1.04rem; line-height: 1.8; color: var(--text);
+  font-size: 1.05rem;
+  /*
+    line-height 2.1 gives inline fractions (~1.8em tall) room
+    above and below without crowding adjacent lines.
+  */
+  line-height: 2.1;
+  color: var(--text);
   user-select: text;
 }
-.question-content .q-text {
-  font-family: var(--prose-font);
-}
+.question-content .q-text { font-family: var(--prose-font); }
 
-/* LaTeX-like math styling */
+/* Math uses KaTeX fonts */
 .question-content .math-block,
 .question-content .math-inline,
 .question-content .frac,
@@ -226,13 +359,17 @@ body { font-family: var(--prose-font); background: var(--bg); color: var(--text)
   font-kerning: normal;
 }
 
+/*
+  Display math block. line-height 2.6 accommodates stacked
+  fractions: the fraction is ~1.8em tall + surrounding text
+  each needs half a line of leading.
+*/
 .question-content .math-block {
   display: block; text-align: center;
-  margin: 24px 0 20px;
-  font-size: 1.22rem; font-style: normal;
-  color: var(--text);
-  letter-spacing: 0;
-  line-height: 1.55;
+  margin: 28px 0 24px;
+  font-size: 1.18rem; font-style: normal;
+  color: var(--text); letter-spacing: 0;
+  line-height: 2.6;
 }
 
 .question-content em,
@@ -241,242 +378,240 @@ body { font-family: var(--prose-font); background: var(--bg); color: var(--text)
 .q-table em,
 .review-ans-value em {
   font-family: var(--math-italic);
-  font-style: italic;
-  font-weight: 400;
+  font-style: italic; font-weight: 400;
 }
+.question-content .math-inline { font-size: 1.02em; }
+.question-content .math-block .frac { font-size: 1em; }
 
-.question-content .math-inline {
-  font-size: 1.03em;
-}
+/* ── TABLE ── */
+.q-table { border-collapse: collapse; margin: 20px auto; font-family: var(--prose-font); font-size: .9rem; }
+.q-table th, .q-table td { border: 1px solid var(--border-dk); padding: 9px 26px; text-align: center; }
+.q-table th { background: #f4f4f6; font-weight: 600; font-size: .74rem; letter-spacing: .07em; text-transform: uppercase; color: var(--text-m); }
+.q-table em { font-size: 1em; }
+.q-divider { border: none; border-top: 1px solid var(--border); margin: 6px 0 20px; }
 
-.question-content .math-block .frac {
-  font-size: 1em;
-}
-
-.q-table {
-  border-collapse: collapse;
-  margin: 18px auto;
-  font-family: var(--prose-font);
-  font-size: .93rem;
-}
-.q-table th, .q-table td { border: 1px solid var(--border-dk); padding: 9px 30px; text-align: center; }
-.q-table th { background: var(--bg); font-weight: 600; font-size: .82rem; letter-spacing: .03em; }
-.q-table em { font-size: 1.02em; }
-
-/* ── SEPARATING LINE between equation and prose ── */
-.q-divider { border: none; border-top: 1px solid var(--border); margin: 6px 0 22px; }
-
-
-/* ── HIGHLIGHT SPANS ── */
+/* ── HIGHLIGHTS ── */
 .hl-yellow { background: #fef08a; border-radius: 2px; padding: 1px 0; }
 .hl-blue   { background: #bae6fd; border-radius: 2px; padding: 1px 0; }
 .hl-pink   { background: #fbcfe8; border-radius: 2px; padding: 1px 0; }
-.hl-ul     { text-decoration: underline; text-decoration-color: #2563eb; text-decoration-thickness: 2px; }
+.hl-ul     { text-decoration: underline; text-decoration-color: #2563eb; text-decoration-thickness: 1.5px; }
 
 /* ── HIGHLIGHT TOOLBAR ── */
 #hl-toolbar {
   position: fixed; z-index: 9999;
-  background: #fff; border: 1px solid #e2e0db;
-  border-radius: 100px; padding: 7px 13px;
-  display: flex; align-items: center; gap: 9px;
-  box-shadow: 0 8px 28px rgba(0,0,0,.14), 0 2px 8px rgba(0,0,0,.08);
-  pointer-events: auto;
-  opacity: 0; transform: translateY(5px);
-  transition: opacity .13s, transform .13s;
+  background: #fff; border: 1px solid #d8d8e0;
+  border-radius: 100px; padding: 6px 12px;
+  display: flex; align-items: center; gap: 8px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.12), 0 2px 6px rgba(0,0,0,.06);
+  pointer-events: auto; opacity: 0; transform: translateY(4px);
+  transition: opacity .12s, transform .12s;
 }
 #hl-toolbar.visible { opacity: 1; transform: translateY(0); }
-.hl-swatch { width: 24px; height: 24px; border-radius: 50%; cursor: pointer; border: 2.5px solid transparent; transition: transform .12s, box-shadow .12s; flex-shrink: 0; }
-.hl-swatch:hover { transform: scale(1.18); box-shadow: 0 2px 8px rgba(0,0,0,.15); }
+.hl-swatch { width: 21px; height: 21px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform .12s, box-shadow .12s; flex-shrink: 0; }
+.hl-swatch:hover { transform: scale(1.2); box-shadow: 0 2px 8px rgba(0,0,0,.15); }
 .hl-swatch.yellow { background: #fef08a; }
 .hl-swatch.blue   { background: #bae6fd; }
 .hl-swatch.pink   { background: #fbcfe8; }
-.hl-sep { width: 1px; height: 18px; background: #e5e7eb; flex-shrink: 0; }
-.hl-btn { width: 26px; height: 26px; border-radius: 50%; border: 1.5px solid #ddd; background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: .7rem; font-weight: 700; color: var(--text-s); transition: background .12s, border-color .12s; flex-shrink: 0; }
-.hl-btn:hover { background: #f3f4f6; border-color: #9ca3af; }
-.hl-btn.ul-btn { font-family: var(--math-font); font-size: .88rem; text-decoration: underline; text-decoration-color: #2563eb; text-decoration-thickness: 2px; }
-.hl-btn.del-btn { border-color: #fecdd3; color: var(--danger); font-size: .88rem; }
+.hl-sep { width: 1px; height: 16px; background: #e4e4ec; flex-shrink: 0; }
+.hl-btn { width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid #ddd; background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: .68rem; font-weight: 700; color: var(--text-s); transition: background .12s, border-color .12s; flex-shrink: 0; }
+.hl-btn:hover { background: #f3f3f7; border-color: #9ca3af; }
+.hl-btn.ul-btn { font-family: var(--math-font); font-size: .86rem; text-decoration: underline; text-decoration-color: #2563eb; text-decoration-thickness: 1.5px; }
+.hl-btn.del-btn { border-color: #fecdd3; color: var(--danger); font-size: .8rem; }
 .hl-btn.del-btn:hover { background: #fef2f2; }
 
 /* ── MCQ CHOICES ── */
-.bb-choices { list-style: none; display: flex; flex-direction: column; gap: 11px; margin-top: 30px; }
-
-/* Each row = choice box + external xbtn */
-.bb-choice-row { display: flex; align-items: center; gap: 12px; }
-
+.bb-choices { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-top: 28px; }
+.bb-choice-row { display: flex; align-items: center; gap: 10px; }
 .bb-choice {
-  flex: 1;
-  display: flex; align-items: center; gap: 0;
-  border: 1.5px solid var(--border-dk);
-  border-radius: 10px; overflow: hidden;
-  transition: border-color .13s, box-shadow .13s;
-  cursor: pointer;
-  background: var(--surface);
-  min-height: 56px;
+  flex: 1; display: flex; align-items: center; gap: 0;
+  border: 1.5px solid var(--border-dk); border-radius: 9px; overflow: hidden;
+  transition: border-color .13s, box-shadow .13s, background .13s;
+  cursor: pointer; background: var(--surface); min-height: 54px;
 }
-.bb-choice:hover:not(.xd) { border-color: var(--bb-blue); box-shadow: 0 0 0 3px rgba(26,86,219,.08); }
+.bb-choice:hover:not(.xd) { border-color: var(--bb-blue); box-shadow: 0 0 0 3px rgba(26,86,219,.07); background: #f9fbff; }
 .bb-choice.sel { border-color: var(--bb-blue); box-shadow: 0 0 0 3px rgba(26,86,219,.1); background: var(--bb-blue-lt); }
-.bb-choice.xd { opacity: .35; cursor: default; pointer-events: none; }
-.bb-choice.xd .bb-ch-text { text-decoration: line-through; text-decoration-color: #666; text-decoration-thickness: 1.5px; }
-
+.bb-choice.xd { opacity: .26; cursor: default; pointer-events: none; }
+.bb-choice.xd .bb-ch-text { text-decoration: line-through; text-decoration-color: var(--text-m); text-decoration-thickness: 1.5px; }
 .bb-ch-inner { display: flex; align-items: center; flex: 1; padding: 13px 20px; gap: 16px; user-select: none; }
-
-/* Letter bubble */
 .bb-ch-letter {
-  width: 32px; height: 32px; min-width: 32px;
-  border-radius: 50%; border: 2px solid #b0aaa4;
+  width: 29px; height: 29px; min-width: 29px; border-radius: 50%;
+  border: 1.5px solid var(--border-dk);
   display: flex; align-items: center; justify-content: center;
-  font-weight: 700; font-size: .8rem; color: var(--text-s);
-  font-family: var(--prose-font);
-  transition: all .13s; flex-shrink: 0;
-  background: #fff;
+  font-weight: 600; font-size: .72rem; color: var(--text-m);
+  font-family: var(--prose-font); transition: all .13s; flex-shrink: 0; background: #fff;
 }
 .bb-choice.sel .bb-ch-letter { background: var(--bb-blue); border-color: var(--bb-blue); color: #fff; }
-
-/* Choice text — math font for equations */
+/*
+  Choice text: generous line-height so fractions inside choices
+  (e.g. "−11/3 x + 2") have vertical breathing room.
+*/
 .bb-ch-text {
-  font-family: var(--math-font);
-  font-size: 1.06rem; font-weight: 400;
-  color: var(--text); flex: 1; line-height: 1.48;
-  letter-spacing: 0;
+  font-family: var(--math-font); font-size: 1.03rem; font-weight: 400;
+  color: var(--text); flex: 1; line-height: 1.9; letter-spacing: 0;
 }
 .bb-ch-text em { font-style: italic; }
 
-/* ── EXTERNAL CROSS-OUT BUTTON ── */
+/* ── CROSS-OUT BUTTON ── */
 .bb-xbtn-ext {
-  width: 34px; height: 34px; flex-shrink: 0;
-  border-radius: 50%;
-  border: 1.5px solid #b0aaa4;
-  background: transparent; cursor: pointer;
+  width: 29px; height: 29px; flex-shrink: 0; border-radius: 50%;
+  border: 1.5px solid var(--border); background: transparent; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  font-family: var(--prose-font);
-  font-size: .76rem; font-weight: 700; color: #888;
-  position: relative;
-  transition: border-color .13s, color .13s, background .13s;
-  overflow: visible;
+  font-family: var(--prose-font); font-size: .69rem; font-weight: 600; color: var(--text-m);
+  position: relative; transition: border-color .13s, color .13s, background .13s; overflow: visible;
 }
-/* the horizontal strikethrough line across the whole circle */
 .bb-xbtn-ext::before {
-  content: '';
-  position: absolute;
-  left: -3px; right: -3px;
+  content: ''; position: absolute; left: -4px; right: -4px;
   top: 50%; transform: translateY(-50%);
-  height: 1.5px;
-  background: currentColor;
-  opacity: 0;
-  transition: opacity .13s;
+  height: 1.5px; background: currentColor; opacity: 0; transition: opacity .13s;
 }
-.bb-xbtn-ext:hover { border-color: #6b7280; color: #444; background: #f5f4f1; }
-.bb-xbtn-ext.crossed { border-color: #555; color: #333; background: #eeecea; }
+.bb-xbtn-ext:hover { border-color: var(--border-dk); color: var(--text-s); background: #f0f0f4; }
+.bb-xbtn-ext.crossed { border-color: var(--border-dk); color: var(--text-s); background: #ebebf0; }
 .bb-xbtn-ext.crossed::before { opacity: 1; }
 .bb-xbtn-ext:focus { outline: none; }
 
 /* ── OPEN RESPONSE ── */
-.bb-open-wrap { margin-top: 28px; display: flex; flex-direction: column; gap: 8px; }
-.bb-open-label { font-size: .7rem; font-weight: 600; color: var(--text-m); letter-spacing: .08em; text-transform: uppercase; }
-.bb-open-input { padding: 12px 16px; border: 1.5px solid var(--border-dk); border-radius: var(--radius); font-family: var(--math-font); font-size: 1.08rem; color: var(--text); background: var(--bg); width: 100%; max-width: 300px; outline: none; transition: border-color .15s, box-shadow .15s; letter-spacing: 0; }
+.bb-open-wrap { margin-top: 30px; display: flex; flex-direction: column; gap: 8px; }
+.bb-open-label { font-size: .64rem; font-weight: 700; color: var(--text-m); letter-spacing: .12em; text-transform: uppercase; }
+.bb-open-input {
+  padding: 12px 16px; border: 1.5px solid var(--border-dk); border-radius: var(--radius);
+  font-family: var(--math-font); font-size: 1.04rem; color: var(--text); background: #fff;
+  width: 100%; max-width: 280px; outline: none; letter-spacing: 0;
+  transition: border-color .15s, box-shadow .15s;
+}
 .bb-open-input:focus { border-color: var(--bb-blue); box-shadow: 0 0 0 3px rgba(26,86,219,.1); }
 
 /* ═══════════════════════════════════════
-   BOTTOM FOOTER
+   FOOTER
 ═══════════════════════════════════════ */
 .bb-ftr {
   height: var(--ftr-h); background: var(--bb-dark);
-  display: flex; align-items: center; padding: 0 18px; gap: 12px;
-  flex-shrink: 0; z-index: 200;
-  border-top: 1px solid rgba(255,255,255,.04);
+  display: flex; align-items: center; padding: 0 20px; gap: 12px;
+  flex-shrink: 0; z-index: 200; border-top: 1px solid rgba(255,255,255,.025);
 }
 .bb-ftr-left  { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
 .bb-ftr-ctr   { flex-shrink: 0; }
 .bb-ftr-right { flex: 1; display: flex; justify-content: flex-end; gap: 8px; }
-
-/* Logo placeholder */
-.bb-logo-area { width: 36px; height: 36px; border-radius: 6px; border: 1.5px dashed #3d3d3f; background: rgba(255,255,255,.03); display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; overflow: hidden; transition: border-color .15s, background .15s; }
-.bb-logo-area:hover { border-color: #5a5a60; background: rgba(255,255,255,.07); }
+.bb-logo-area {
+  width: 33px; height: 33px; border-radius: 5px; border: 1.5px dashed #282830;
+  background: rgba(255,255,255,.02); display: flex; align-items: center; justify-content: center;
+  cursor: pointer; flex-shrink: 0; overflow: hidden; transition: border-color .15s, background .15s;
+}
+.bb-logo-area:hover { border-color: #40404a; background: rgba(255,255,255,.06); }
 .bb-logo-area img { width: 100%; height: 100%; object-fit: contain; display: none; }
-.bb-logo-placeholder { font-size: .44rem; font-weight: 700; letter-spacing: .04em; color: #3d3d3f; text-align: center; text-transform: uppercase; line-height: 1.3; pointer-events: none; }
+.bb-logo-placeholder { font-size: .42rem; font-weight: 700; letter-spacing: .04em; color: #282830; text-align: center; text-transform: uppercase; line-height: 1.3; pointer-events: none; }
 #logo-upload-input { display: none; }
-
-.bb-sname { color: #5a5a60; font-size: .74rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.bb-navctr-btn { background: #252527; border: 1px solid #3a3a3c; border-radius: 7px; color: #c5c4c0; font-size: .78rem; font-weight: 500; padding: 7px 20px; cursor: pointer; font-family: inherit; white-space: nowrap; transition: background .15s; letter-spacing: .01em; }
-.bb-navctr-btn:hover { background: #2e2e30; }
-.bb-btn-back { padding: 8px 18px; border-radius: 7px; font-family: inherit; font-size: .8rem; font-weight: 500; cursor: pointer; background: transparent; border: 1.5px solid #3a3a3c; color: #c5c4c0; white-space: nowrap; transition: all .15s; letter-spacing: .01em; }
-.bb-btn-back:hover:not(:disabled) { background: #252527; border-color: #555; }
-.bb-btn-back:disabled { opacity: .25; cursor: not-allowed; }
-.bb-btn-next { padding: 8px 22px; border-radius: 7px; font-family: inherit; font-size: .8rem; font-weight: 600; cursor: pointer; background: var(--bb-blue); border: none; color: #fff; white-space: nowrap; transition: background .15s, transform .1s; letter-spacing: .01em; }
+.bb-sname { color: #38383e; font-size: .71rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bb-navctr-btn {
+  background: var(--bb-dark2); border: 1px solid var(--bb-border-hd);
+  border-radius: 6px; color: #606068; font-size: .73rem; font-weight: 500; padding: 7px 20px;
+  cursor: pointer; font-family: var(--prose-font); white-space: nowrap;
+  transition: background .15s, color .15s; letter-spacing: .01em;
+}
+.bb-navctr-btn:hover { background: var(--bb-dark3); color: var(--bb-txt-hd); }
+.bb-btn-back {
+  padding: 8px 18px; border-radius: 6px; font-family: var(--prose-font);
+  font-size: .75rem; font-weight: 500; cursor: pointer; background: transparent;
+  border: 1.5px solid var(--bb-border-hd); color: #606068; white-space: nowrap;
+  transition: all .15s; letter-spacing: .01em;
+}
+.bb-btn-back:hover:not(:disabled) { background: var(--bb-dark2); border-color: #42424c; color: var(--bb-txt-hd); }
+.bb-btn-back:disabled { opacity: .16; cursor: not-allowed; }
+.bb-btn-next {
+  padding: 8px 22px; border-radius: 6px; font-family: var(--prose-font);
+  font-size: .75rem; font-weight: 600; cursor: pointer;
+  background: var(--bb-blue); border: none; color: #fff;
+  white-space: nowrap; letter-spacing: .02em; transition: background .15s, transform .1s;
+}
 .bb-btn-next:hover { background: var(--bb-blue-h); }
-.bb-btn-next:active { transform: scale(.97); }
-.bb-btn-next.last-q { background: #15803d; }
-.bb-btn-next.last-q:hover { background: #0f5f2f; }
+.bb-btn-next:active { transform: scale(.98); }
+.bb-btn-next.last-q { background: #166534; }
+.bb-btn-next.last-q:hover { background: #14532d; }
 
 /* ═══════════════════════════════════════
    NAVIGATOR OVERLAY
 ═══════════════════════════════════════ */
-#nav-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.48); z-index: 600; display: flex; align-items: flex-end; justify-content: center; }
-.bb-nav-panel { background: var(--surface); border-radius: 14px 14px 0 0; padding: 22px 22px 18px; width: 100%; max-width: 640px; max-height: 62vh; overflow-y: auto; }
-.bb-nav-ph { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid var(--border); gap: 12px; flex-wrap: wrap; }
-.bb-nav-ph h3 { font-size: .68rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--text-m); }
+#nav-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.44); z-index: 600; display: flex; align-items: flex-end; justify-content: center; }
+.bb-nav-panel {
+  background: var(--surface); border-radius: 12px 12px 0 0;
+  padding: 24px 22px 20px; width: 100%; max-width: 640px; max-height: 62vh;
+  overflow-y: auto; box-shadow: 0 -8px 40px rgba(0,0,0,.1);
+}
+.bb-nav-ph {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 18px; padding-bottom: 16px;
+  border-bottom: 1px solid var(--border); gap: 12px; flex-wrap: wrap;
+}
+.bb-nav-ph h3 { font-size: .63rem; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; color: var(--text-m); }
 .bb-nav-legend { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
-.bb-nav-li { display: flex; align-items: center; gap: 5px; font-size: .7rem; color: var(--text-m); }
-.bb-nav-dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
-.nd-ans  { background: var(--ans-bd); }
+.bb-nav-li { display: flex; align-items: center; gap: 5px; font-size: .68rem; color: var(--text-m); }
+.bb-nav-dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
+.nd-ans  { background: #10b981; }
 .nd-cur  { background: var(--bb-blue); }
 .nd-mark { background: var(--mark-bd); }
 .nd-none { background: var(--border-dk); }
-.bb-nav-palette { display: grid; grid-template-columns: repeat(auto-fill, minmax(42px, 1fr)); gap: 8px; margin-bottom: 18px; }
-.bb-nav-q { aspect-ratio: 1; border-radius: 50%; border: 2px solid var(--border-dk); background: var(--surface); font-size: .76rem; font-weight: 700; cursor: pointer; color: var(--text-s); font-family: inherit; transition: all .11s; }
-.bb-nav-q:hover { border-color: var(--bb-blue); color: var(--bb-blue); }
-.bb-nav-q.cur { background: var(--bb-blue); border-color: var(--bb-blue); color: #fff; }
-.bb-nav-q.ans { background: var(--ans-bg); border-color: var(--ans-bd); color: var(--answered); }
-.bb-nav-q.mrk { background: var(--mark-bg); border-color: var(--mark-bd); color: var(--mark); }
-.bb-nav-close { width: 100%; padding: 10px; background: var(--bb-dark); color: #fff; border: none; border-radius: var(--radius); font-family: inherit; font-size: .84rem; font-weight: 600; cursor: pointer; transition: background .15s; }
-.bb-nav-close:hover { background: #252527; }
+.bb-nav-palette { display: grid; grid-template-columns: repeat(auto-fill, minmax(40px, 1fr)); gap: 7px; margin-bottom: 18px; }
+.bb-nav-q {
+  aspect-ratio: 1; border-radius: 50%; border: 1.5px solid var(--border-dk);
+  background: var(--surface); font-size: .71rem; font-weight: 600;
+  cursor: pointer; color: var(--text-m); font-family: var(--prose-font); transition: all .11s;
+}
+.bb-nav-q:hover { border-color: var(--bb-blue); color: var(--bb-blue); background: var(--bb-blue-lt); }
+.bb-nav-q.cur  { background: var(--bb-blue); border-color: var(--bb-blue); color: #fff; }
+.bb-nav-q.ans  { background: var(--ans-bg); border-color: #10b981; color: var(--answered); }
+.bb-nav-q.mrk  { background: var(--mark-bg); border-color: var(--mark-bd); color: var(--mark); }
+.bb-nav-close {
+  width: 100%; padding: 10px; background: #f0f0f5; color: var(--text-s); border: none;
+  border-radius: var(--radius); font-family: var(--prose-font); font-size: .79rem; font-weight: 600;
+  cursor: pointer; transition: background .15s; letter-spacing: .04em;
+}
+.bb-nav-close:hover { background: #e8e8ee; }
 
 /* ═══════════════════════════════════════
    DIRECTIONS MODAL
 ═══════════════════════════════════════ */
-#dir-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.46); z-index: 700; display: flex; align-items: center; justify-content: center; padding: 24px; }
-.bb-dir-panel { background: var(--surface); border-radius: 12px; max-width: 640px; width: 100%; max-height: 80vh; display: flex; flex-direction: column; box-shadow: 0 24px 60px rgba(0,0,0,.22); }
-.bb-dir-hd { padding: 20px 28px 16px; border-bottom: 1px solid var(--border); }
-.bb-dir-hd h2 { font-family: var(--math-font); font-size: 1.3rem; font-weight: 400; }
-.bb-dir-body { padding: 20px 28px; overflow-y: auto; flex: 1; font-family: var(--prose-font); font-size: .95rem; line-height: 1.75; color: var(--text-s); }
+#dir-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 700; display: flex; align-items: center; justify-content: center; padding: 24px; }
+.bb-dir-panel { background: var(--surface); border-radius: var(--radius-lg); max-width: 600px; width: 100%; max-height: 80vh; display: flex; flex-direction: column; box-shadow: 0 24px 60px rgba(0,0,0,.16); }
+.bb-dir-hd { padding: 24px 28px 18px; border-bottom: 1px solid var(--border); }
+.bb-dir-hd h2 { font-family: var(--serif-font); font-size: 1.2rem; font-weight: 400; color: var(--text); }
+.bb-dir-body { padding: 22px 28px; overflow-y: auto; flex: 1; font-family: var(--prose-font); font-size: .91rem; line-height: 1.75; color: var(--text-s); }
 .bb-dir-body p { margin-bottom: 12px; }
 .bb-dir-body ul { margin: 6px 0 12px 22px; }
 .bb-dir-body li { margin-bottom: 6px; }
 .bb-dir-body strong { font-weight: 600; color: var(--text); }
 .bb-dir-ft { padding: 16px 28px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; }
-.bb-dir-close { padding: 9px 26px; background: var(--bb-blue); color: #fff; border: none; border-radius: var(--radius); font-family: inherit; font-size: .88rem; font-weight: 600; cursor: pointer; transition: background .15s; }
+.bb-dir-close { padding: 9px 26px; background: var(--bb-blue); color: #fff; border: none; border-radius: var(--radius); font-family: var(--prose-font); font-size: .84rem; font-weight: 600; cursor: pointer; transition: background .15s; }
 .bb-dir-close:hover { background: var(--bb-blue-h); }
 
 /* ═══════════════════════════════════════
    SUBMIT CONFIRM MODAL
 ═══════════════════════════════════════ */
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.42); display: flex; align-items: center; justify-content: center; z-index: 999; }
-.modal-box { background: var(--surface); border-radius: 12px; padding: 36px 40px; max-width: 420px; width: 90%; box-shadow: 0 16px 48px rgba(0,0,0,.18); }
-.modal-box h3 { font-family: var(--math-font); font-size: 1.3rem; font-weight: 400; margin-bottom: 12px; }
-.modal-box p { color: var(--text-m); line-height: 1.65; margin-bottom: 28px; font-size: .93rem; }
-.modal-buttons { display: flex; gap: 12px; justify-content: flex-end; }
-.btn-modal-cancel { padding: 9px 20px; border: 1.5px solid var(--border-dk); background: var(--surface); border-radius: var(--radius); font-family: inherit; font-size: .85rem; font-weight: 500; cursor: pointer; transition: background .15s; }
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.36); display: flex; align-items: center; justify-content: center; z-index: 999; }
+.modal-box { background: var(--surface); border-radius: var(--radius-lg); padding: 36px 40px; max-width: 400px; width: 90%; box-shadow: 0 16px 48px rgba(0,0,0,.14); }
+.modal-box h3 { font-family: var(--serif-font); font-size: 1.2rem; font-weight: 400; margin-bottom: 10px; color: var(--text); }
+.modal-box p { color: var(--text-m); line-height: 1.65; margin-bottom: 28px; font-size: .9rem; }
+.modal-buttons { display: flex; gap: 10px; justify-content: flex-end; }
+.btn-modal-cancel { padding: 9px 20px; border: 1.5px solid var(--border-dk); background: var(--surface); border-radius: var(--radius); font-family: var(--prose-font); font-size: .83rem; font-weight: 500; cursor: pointer; transition: background .15s; color: var(--text-s); }
 .btn-modal-cancel:hover { background: var(--bg); }
-.btn-modal-confirm { padding: 9px 20px; border: none; background: var(--danger); color: #fff; border-radius: var(--radius); font-family: inherit; font-size: .85rem; font-weight: 600; cursor: pointer; transition: background .15s; }
+.btn-modal-confirm { padding: 9px 20px; border: none; background: var(--danger); color: #fff; border-radius: var(--radius); font-family: var(--prose-font); font-size: .83rem; font-weight: 600; cursor: pointer; transition: background .15s; }
 .btn-modal-confirm:hover { background: #991b1b; }
 
 /* ═══════════════════════════════════════
    SUBMITTED SCREEN
 ═══════════════════════════════════════ */
-#screen-submitted { min-height: 100vh; align-items: center; justify-content: center; background: var(--bg); padding: 40px 24px; }
-.submitted-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 48px 64px; max-width: 500px; width: 100%; text-align: center; box-shadow: 0 8px 32px rgba(0,0,0,.09); display: flex; flex-direction: column; align-items: center; }
-.submitted-icon { width: 60px; height: 60px; border-radius: 50%; background: var(--ans-bg); color: var(--answered); font-size: 1.8rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 22px; border: 2px solid var(--ans-bd); }
-.submitted-card h2 { font-family: var(--math-font); font-size: 1.6rem; font-weight: 400; margin-bottom: 12px; }
-.submitted-card p { color: var(--text-m); font-size: .93rem; line-height: 1.65; }
-.submitted-small { margin-top: 12px; font-size: .8rem !important; font-style: italic; }
-.score-box { margin: 24px auto 0; background: var(--bb-blue-lt); border: 2px solid var(--bb-blue); border-radius: 10px; padding: 20px 32px; display: inline-block; min-width: 220px; }
-.score-box .score-num { font-family: var(--math-font); font-size: 2.4rem; font-weight: 400; color: var(--bb-blue); line-height: 1; }
-.score-box .score-label { font-size: .74rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--bb-blue); margin-top: 6px; opacity: .8; }
-.score-box .score-pct { font-size: .95rem; color: var(--text-m); margin-top: 6px; }
-.btn-review { margin-top: 22px; padding: 11px 28px; background: var(--bb-blue); color: #fff; border: none; border-radius: var(--radius); font-family: inherit; font-size: .92rem; font-weight: 600; cursor: pointer; transition: background .15s; }
+#screen-submitted { min-height: 100vh; align-items: center; justify-content: center; background: #ffffff; padding: 40px 24px; }
+.submitted-card { max-width: 400px; width: 100%; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.submitted-icon { width: 48px; height: 48px; border-radius: 50%; background: var(--ans-bg); color: var(--answered); display: flex; align-items: center; justify-content: center; margin: 0 auto 22px; border: 1.5px solid var(--ans-bd); }
+.submitted-card h2 { font-family: var(--serif-font); font-size: 1.55rem; font-weight: 400; margin-bottom: 10px; color: var(--text); }
+.submitted-card > p { color: var(--text-m); font-size: .9rem; line-height: 1.65; }
+.submitted-small { margin-top: 10px; font-size: .74rem !important; color: var(--text-m) !important; }
+.score-box { margin: 28px auto 0; background: var(--bb-blue-lt); border: 1.5px solid var(--bb-blue-bd); border-radius: 10px; padding: 22px 36px; display: inline-block; min-width: 200px; }
+.score-box .score-num { font-family: var(--serif-font); font-size: 2.4rem; font-weight: 400; color: var(--bb-blue); line-height: 1; }
+.score-box .score-label { font-size: .64rem; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; color: var(--bb-blue); margin-top: 8px; opacity: .65; }
+.score-box .score-pct { font-size: .9rem; color: var(--text-m); margin-top: 6px; }
+.btn-review { margin-top: 24px; padding: 11px 28px; background: var(--bb-blue); color: #fff; border: none; border-radius: var(--radius); font-family: var(--prose-font); font-size: .88rem; font-weight: 600; cursor: pointer; transition: background .15s; letter-spacing: .02em; }
 .btn-review:hover { background: var(--bb-blue-h); }
-.email-status { margin-top: 14px; font-size: .8rem; padding: 8px 16px; border-radius: 6px; display: none; }
-.email-status.sending { background: #fff7ed; color: #b45309; border: 1px solid #f59e0b; display: block; }
+.email-status { margin-top: 16px; font-size: .77rem; padding: 8px 16px; border-radius: 6px; display: none; }
+.email-status.sending { background: #fffbeb; color: #92400e; border: 1px solid #fcd34d; display: block; }
 .email-status.sent    { background: var(--ans-bg); color: var(--answered); border: 1px solid var(--ans-bd); display: block; }
 .email-status.failed  { background: var(--danger-bg); color: var(--danger); border: 1px solid var(--danger-bd); display: block; }
 
@@ -484,43 +619,44 @@ body { font-family: var(--prose-font); background: var(--bg); color: var(--text)
    REVIEW SCREEN
 ═══════════════════════════════════════ */
 #screen-review { flex-direction: column; min-height: 100vh; background: var(--bg); }
-.review-header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 4px rgba(0,0,0,.05); gap: 12px; }
-.review-header h2 { font-family: var(--math-font); font-size: 1.15rem; font-weight: 400; }
-.review-score-pill { background: var(--bb-blue-lt); border: 1.5px solid var(--bb-blue); color: var(--bb-blue); font-weight: 700; font-size: .92rem; padding: 5px 18px; border-radius: 20px; white-space: nowrap; }
-.review-body { max-width: 820px; margin: 0 auto; width: 100%; padding: 32px 24px; display: flex; flex-direction: column; gap: 18px; }
-.review-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; box-shadow: 0 1px 6px rgba(0,0,0,.05); }
-.review-card-header { display: flex; align-items: center; gap: 12px; padding: 13px 20px; border-bottom: 1px solid var(--border); background: #fafaf8; }
-.review-q-num { font-size: .7rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--text-m); }
-.review-badge { font-size: .72rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; margin-left: auto; }
+.review-header { background: #ffffff; border-bottom: 1px solid var(--border); padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 4px rgba(0,0,0,.04); gap: 12px; }
+.review-header h2 { font-family: var(--serif-font); font-size: 1rem; font-weight: 400; color: var(--text); }
+.review-score-pill { background: var(--bb-blue-lt); border: 1.5px solid var(--bb-blue-bd); color: var(--bb-blue); font-weight: 700; font-size: .83rem; padding: 5px 16px; border-radius: 20px; white-space: nowrap; }
+.review-body { max-width: 800px; margin: 0 auto; width: 100%; padding: 32px 24px; display: flex; flex-direction: column; gap: 16px; }
+.review-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+.review-card-header { display: flex; align-items: center; gap: 12px; padding: 12px 20px; border-bottom: 1px solid var(--border); background: #fafafa; }
+.review-q-num { font-size: .64rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--text-m); }
+.review-badge { font-size: .65rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; margin-left: auto; letter-spacing: .02em; }
 .review-badge.correct { background: var(--ans-bg); color: var(--answered); border: 1px solid var(--ans-bd); }
 .review-badge.wrong   { background: var(--danger-bg); color: var(--danger); border: 1px solid var(--danger-bd); }
-.review-badge.skipped { background: #f5f4f0; color: var(--text-m); border: 1px solid var(--border-dk); }
-.review-card-body { padding: 20px 24px; font-family: var(--prose-font); font-size: .97rem; line-height: 1.72; }
-.review-answers { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; font-size: .88rem; }
+.review-badge.skipped { background: #f2f2f6; color: var(--text-m); border: 1px solid var(--border-dk); }
+/* generous line-height here too for any fractions in review */
+.review-card-body { padding: 20px 24px; font-family: var(--prose-font); font-size: .94rem; line-height: 2.1; color: var(--text-s); }
+.review-answers { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; font-size: .85rem; }
 .review-answer-row { display: flex; align-items: flex-start; gap: 10px; padding: 8px 12px; border-radius: 7px; }
 .review-answer-row.student-correct { background: var(--ans-bg); border: 1px solid var(--ans-bd); }
 .review-answer-row.student-wrong   { background: var(--danger-bg); border: 1px solid var(--danger-bd); }
-.review-answer-row.correct-ans     { background: #eef3ff; border: 1px solid var(--bb-blue-bd); }
-.review-answer-row.skipped-row     { background: #f5f4f0; border: 1px solid var(--border-dk); }
-.review-ans-icon  { font-size: .95rem; flex-shrink: 0; margin-top: 1px; }
+.review-answer-row.correct-ans     { background: var(--bb-blue-lt); border: 1px solid var(--bb-blue-bd); }
+.review-answer-row.skipped-row     { background: #f2f2f6; border: 1px solid var(--border-dk); }
+.review-ans-icon  { font-size: .88rem; flex-shrink: 0; margin-top: 1px; }
 .review-ans-label { font-weight: 600; flex-shrink: 0; color: var(--text-s); }
-.review-ans-value { font-family: var(--math-font); }
+.review-ans-value { font-family: var(--math-font); line-height: 2.1; }
 
 /* ═══════════════════════════════════════
    MOBILE
 ═══════════════════════════════════════ */
 @media (max-width: 700px) {
-  .start-card { padding: 28px 20px; }
-  .start-title { font-size: 1.5rem; }
+  .start-card { padding: 40px 22px; }
+  .start-title { font-size: 1.6rem; }
   .bb-sect-label { display: none; }
-  .bb-hdr { padding: 0 10px; gap: 5px; }
+  .bb-hdr { padding: 0 12px; gap: 6px; }
   .btn-label { display: none; }
   .bb-main { flex-direction: column; }
   .calc-pane { width: 100% !important; height: 45vh; min-width: unset; border-right: none; border-bottom: 1px solid var(--border); }
   .pane-divider { display: none !important; }
-  .q-pane { padding: 14px 10px 20px; }
-  .bb-q-body { padding: 20px 18px 24px; }
-  .bb-ftr { padding: 0 10px; gap: 6px; }
+  .q-pane { padding: 16px 12px 28px; }
+  .bb-q-body { padding: 20px 18px 26px; }
+  .bb-ftr { padding: 0 12px; gap: 6px; }
   .bb-ftr-left { flex: none; }
   .bb-sname { display: none; }
   .bb-ftr-ctr { flex: 1; }
@@ -538,20 +674,29 @@ body { font-family: var(--prose-font); background: var(--bg); color: var(--text)
 <!-- ═══════ START SCREEN ═══════ -->
 <div id="screen-start" class="screen active">
   <div class="start-card">
-    <div class="start-logo">MATH</div>
-    <h1 class="start-title">Linear Equation Evaluation</h1>
-    <p class="start-subtitle">35 Minutes &nbsp;·&nbsp; 18 Questions</p>
+    <div class="start-eyebrow">
+      <span class="start-eyebrow-rule"></span>
+      Mathematics Assessment
+      <span class="start-eyebrow-rule"></span>
+    </div>
+    <h1 class="start-title">Evaluation for Queen Sasha</h1>
+    <p class="start-subtitle">40 Minutes &nbsp;·&nbsp; 25 Questions</p>
+    <div class="start-divider"></div>
     <div class="start-form">
-      <label for="access-code">Class Access Code</label>
-      <input type="password" id="access-code" placeholder="Enter the code given by your teacher…" autocomplete="off"/>
-      <label for="student-name">Student Name</label>
-      <input type="text" id="student-name" placeholder="Enter your full name…" autocomplete="off"/>
-      <button id="btn-start" onclick="startExam()">Begin Exam →</button>
+      <div class="start-field">
+        <label for="access-code">Class Access Code</label>
+        <input type="password" id="access-code" placeholder="Enter the code given by your teacher…" autocomplete="off"/>
+      </div>
+      <div class="start-field">
+        <label for="student-name">Student Name</label>
+        <input type="text" id="student-name" placeholder="Enter your full name…" autocomplete="off"/>
+      </div>
+      <button id="btn-start" onclick="startExam()">Begin Exam</button>
     </div>
     <div class="resume-banner" id="resume-banner">
-      ⚠ A saved session was found. Enter the same student name to resume where you left off.
+      A saved session was found. Enter the same student name to resume where you left off.
     </div>
-    <p class="start-note">Do not close the browser tab once the exam has started.</p>
+    <p class="start-note">Do not close this browser tab once the exam has started.</p>
   </div>
 </div>
 
@@ -561,18 +706,27 @@ body { font-family: var(--prose-font); background: var(--bg); color: var(--text)
   <!-- TOP HEADER -->
   <header class="bb-hdr">
     <div class="bb-hdr-left">
-      <span class="bb-sect-label">Linear Equation Evaluation</span>
-      <button class="bb-dir-btn" type="button" onclick="openDirections()">Directions ▾</button>
+      <span class="bb-sect-label">Evaluation for Queen Sasha</span>
+      <button class="bb-dir-btn" type="button" onclick="openDirections()">Directions</button>
     </div>
     <div class="bb-hdr-ctr">
       <div class="bb-timer-wrap">
-        <div class="bb-timer-num" id="timer-box">35:00</div>
+        <div class="bb-timer-num" id="timer-box">40:00</div>
         <button class="bb-timer-tog" id="timer-tog" type="button" onclick="toggleTimer()">Hide</button>
       </div>
     </div>
     <div class="bb-hdr-right">
       <button class="bb-tool-btn" id="calc-toggle-btn" type="button" onclick="toggleCalculator()">
-        <span>🧮</span><span class="btn-label">Calculator</span>
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x=".75" y=".75" width="11.5" height="11.5" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
+          <rect x="2.5" y="2.5" width="3" height="2" rx=".5" fill="currentColor"/>
+          <rect x="7.5" y="2.5" width="3" height="2" rx=".5" fill="currentColor"/>
+          <rect x="2.5" y="5.9" width="3" height="1.3" rx=".5" fill="currentColor"/>
+          <rect x="7.5" y="5.9" width="3" height="1.3" rx=".5" fill="currentColor"/>
+          <rect x="2.5" y="8.7" width="3" height="1.3" rx=".5" fill="currentColor"/>
+          <rect x="7.5" y="8.7" width="3" height="1.3" rx=".5" fill="currentColor"/>
+        </svg>
+        <span class="btn-label">Calculator</span>
       </button>
       <button class="bb-tool-btn bb-submit-btn" type="button" onclick="confirmSubmit()">
         <span class="btn-label">Submit Exam</span>
@@ -586,8 +740,8 @@ body { font-family: var(--prose-font); background: var(--bg); color: var(--text)
     <!-- CALCULATOR PANE -->
     <div class="calc-pane hidden" id="calc-pane">
       <div class="calc-pane-hd">
-        <span>🧮 Desmos Calculator</span>
-        <button class="calc-pane-close" type="button" onclick="toggleCalculator()">✕ Close</button>
+        <span>Desmos Calculator</span>
+        <button class="calc-pane-close" type="button" onclick="toggleCalculator()">Close</button>
       </div>
       <div id="desmos-wrap"></div>
     </div>
@@ -599,7 +753,7 @@ body { font-family: var(--prose-font); background: var(--bg); color: var(--text)
     <div class="q-pane" id="q-pane">
       <div class="bb-q-card">
         <div class="bb-q-meta">
-          <div class="bb-q-num-badge" id="q-number-label">Question 1 of 18</div>
+          <div class="bb-q-num-badge" id="q-number-label">Question 1 of 25</div>
           <button class="bb-mark-btn" id="mark-review-btn" type="button" onclick="toggleMarkForReview()">⚑ Mark for Review</button>
         </div>
         <div class="bb-q-body">
@@ -635,7 +789,11 @@ body { font-family: var(--prose-font); background: var(--bg); color: var(--text)
 <!-- ═══════ SUBMITTED SCREEN ═══════ -->
 <div id="screen-submitted" class="screen">
   <div class="submitted-card">
-    <div class="submitted-icon">✓</div>
+    <div class="submitted-icon">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M4 11.5L8.5 16L18 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
     <h2>Submitted Successfully</h2>
     <p>Your exam has been recorded. Results have been sent to your teacher.</p>
     <div id="score-display" class="score-box" style="display:none">
@@ -644,7 +802,7 @@ body { font-family: var(--prose-font); background: var(--bg); color: var(--text)
       <div class="score-pct" id="score-pct"></div>
     </div>
     <div id="email-status" class="email-status"></div>
-    <button class="btn-review" onclick="showReview()">📋 Review My Answers</button>
+    <button class="btn-review" onclick="showReview()">Review My Answers</button>
     <p class="submitted-small">You may now close this tab.</p>
   </div>
 </div>
@@ -652,10 +810,10 @@ body { font-family: var(--prose-font); background: var(--bg); color: var(--text)
 <!-- ═══════ REVIEW SCREEN ═══════ -->
 <div id="screen-review" class="screen">
   <div class="review-header">
-    <h2>Answer Review — Linear Equation Evaluation</h2>
+    <h2>Answer Review — Evaluation for Queen Sasha</h2>
     <div style="display:flex;align-items:center;gap:12px">
       <span class="review-score-pill" id="review-score-pill">— / 18</span>
-      <button onclick="showScreen('screen-submitted')" style="padding:7px 16px;font-size:.8rem;border:1.5px solid var(--border-dk);background:var(--surface);border-radius:var(--radius);cursor:pointer;font-family:inherit;font-weight:500;">← Back</button>
+      <button onclick="showScreen('screen-submitted')" style="padding:7px 16px;font-size:.77rem;border:1.5px solid var(--border-dk);background:var(--surface);border-radius:var(--radius);cursor:pointer;font-family:inherit;font-weight:500;color:var(--text-s);">← Back</button>
     </div>
   </div>
   <div class="review-body" id="review-body"></div>
@@ -729,46 +887,77 @@ body { font-family: var(--prose-font); background: var(--bg); color: var(--text)
 /* ══════════════════════════════════════════
    CONFIG
 ══════════════════════════════════════════ */
-const EXAM_DURATION_SECONDS   = 2100;
-const EXAM_TITLE              = "Linear Equation Evaluation";
+const EXAM_DURATION_SECONDS   = 2400;
+const EXAM_TITLE              = "Evaluation for Queen Sasha";
 const EMAILJS_PUBLIC_KEY      = "AWaz2SLFBz0DYBhLQ";
 const EMAILJS_SERVICE_ID      = "service_2gx7k5a";
 const EMAILJS_TEMPLATE_ID     = "template_nvb1v3n";
 const RECIPIENT_EMAIL         = "roumiyehmostafa@gmail.com";
-const LS_KEY                  = "linearExam_session_v3";
+const LS_KEY                  = "queenSashaEvaluation_session_v1";
 
 /* ══════════════════════════════════════════
    QUESTIONS
 ══════════════════════════════════════════ */
 const questions = [
-  {number:1,type:"open",text:`If <em>5x</em> &minus; 8 = 17, what is the value of <em>10x</em> + 4?`,graphSVG:null,tableHTML:null,choices:null,points:1},
-  {number:2,type:"mcq",text:`<span class="math-block">5(4<em>x</em> + 7) = 55</span>Which equation has the same solution as the given equation?`,graphSVG:null,tableHTML:null,choices:[{letter:"A",html:"4<em>x</em> + 7 = 50"},{letter:"B",html:"4<em>x</em> + 7 = 11"},{letter:"C",html:"4<em>x</em> + 35 = 55"},{letter:"D",html:"4<em>x</em> + 35 = 60"}],points:1},
-  {number:3,type:"mcq",text:`A fitness equipment supplier stocks 50-pound, 35-pound, and 20-pound dumbbells. In a recent shipment, the number of 50-pound dumbbells is 2 times the number <em>d</em> of 35-pound dumbbells, and the number of 20-pound dumbbells is 18. The shipment contains 90 dumbbells total. Which equation represents this situation?`,graphSVG:null,tableHTML:null,choices:[{letter:"A",html:"50(2<em>d</em>) + 35<em>d</em> + 20(18) = 90"},{letter:"B",html:"50<em>d</em> + 35<em>d</em> + 20<em>d</em> = 90"},{letter:"C",html:"2<em>d</em> + 18 = 90"},{letter:"D",html:"3<em>d</em> + 18 = 90"}],points:1},
-  {number:4,type:"mcq",text:`Maria purchased a vintage guitar for a total of 450 dollars. She made a down payment of 90 dollars and agreed to make <em>m</em> monthly payments of 45 dollars each. Which of the following equations represents this situation?`,graphSVG:null,tableHTML:null,choices:[{letter:"A",html:"45<em>m</em> &minus; 90 = 450"},{letter:"B",html:"90<em>m</em> &minus; 45 = 450"},{letter:"C",html:"45<em>m</em> + 90 = 450"},{letter:"D",html:"90<em>m</em> + 45 = 450"}],points:1},
-  {number:5,type:"mcq",text:`A manufacturing plant calculates its total weekly production cost by adding its fixed weekly overhead costs to the total variable costs of building scooters. The equation 38,000 = 210<em>n</em> + 5,400 represents this situation for a week where <em>n</em> scooters are built. Which statement best interprets 210<em>n</em> in this context?`,graphSVG:null,tableHTML:null,choices:[{letter:"A",html:"The total variable cost, in dollars, associated with building <em>n</em> scooters"},{letter:"B",html:"The variable cost, in dollars, to build each scooter"},{letter:"C",html:"The fixed weekly overhead costs, in dollars"},{letter:"D",html:"The total weekly production cost, in dollars"}],points:1},
-  {number:6,type:"mcq",text:`<span class="math-block">3(2<em>x</em> &minus; 8) &minus; 7 = 4(<em>x</em> &minus; 4) + 4</span>If <em>x</em> is the solution to the equation above, what is the value of <em>x</em> &minus; 4?`,graphSVG:null,tableHTML:null,choices:[{letter:"A",html:'<span class="frac"><span class="fnum">19</span><span class="fden">2</span></span>'},{letter:"B",html:'<span class="frac"><span class="fnum">11</span><span class="fden">2</span></span>'},{letter:"C",html:'<span class="frac"><span class="fnum">13</span><span class="fden">2</span></span>'},{letter:"D",html:'&minus;<span class="frac"><span class="fnum">11</span><span class="fden">2</span></span>'}],points:1},
-  {number:7,type:"mcq",text:`One bag of popcorn costs 5 dollars. At this rate, how many dollars will <em>b</em> bags of popcorn cost?`,graphSVG:null,tableHTML:null,choices:[{letter:"A",html:"5<em>b</em>"},{letter:"B",html:"5 + <em>b</em>"},{letter:"C",html:'<span class="frac"><span class="fnum">5</span><span class="fden"><em>b</em></span></span>'},{letter:"D",html:'<span class="frac"><span class="fnum"><em>b</em></span><span class="fden">5</span></span>'}],points:1},
-  {number:8,type:"mcq",text:`11 more than 12 times a number <em>x</em> is equal to 107. Which equation represents this situation?`,graphSVG:null,tableHTML:null,choices:[{letter:"A",html:"(11)(12)<em>x</em> = 107"},{letter:"B",html:"12<em>x</em> = 107 + 11"},{letter:"C",html:"11<em>x</em> + 12 = 107"},{letter:"D",html:"12<em>x</em> + 11 = 107"}],points:1},
-  {number:9,type:"open",text:`<span class="math-block"><span class="frac"><span class="fnum">1</span><span class="fden">4</span></span>(<em>x</em> + 10) &minus; <span class="frac"><span class="fnum">1</span><span class="fden">6</span></span>(<em>x</em> + 10) = 4</span>What value of <em>x</em> is the solution to the given equation?`,graphSVG:null,tableHTML:null,choices:null,points:1},
-  {number:10,type:"mcq",text:`On the first day of a reading challenge, a student has read 120 pages. Each day after the first day, the student reads 20 new pages. How many total pages will the student have read 5 days after the first day?`,graphSVG:null,tableHTML:null,choices:[{letter:"A",html:"620"},{letter:"B",html:"220"},{letter:"C",html:"125"},{letter:"D",html:"120"}],points:1},
-  {number:11,type:"open",text:`Line <em>m</em> is defined by <em>y</em> = &minus;<span class="frac"><span class="fnum">23</span><span class="fden">7</span></span><em>x</em> &minus; 8. Line <em>n</em> is perpendicular to line <em>m</em> in the <em>xy</em>-plane. What is the slope of line <em>n</em>?`,graphSVG:null,tableHTML:null,choices:null,points:1},
-  {number:12,type:"open",text:`Line <em>s</em> is defined by 4<em>y</em> &minus; 32<em>x</em> = 15. Line <em>t</em> is perpendicular to line <em>s</em> in the <em>xy</em>-plane. What is the slope of line <em>t</em>?`,graphSVG:null,tableHTML:null,choices:null,points:1},
-  {number:13,type:"mcq",text:`For line <em>p</em>, the table shows three values of <em>x</em> and their corresponding values of <em>y</em>. Line <em>q</em> is the result of translating line <em>p</em> up 4 units in the <em>xy</em>-plane. What is the <em>x</em>-intercept of line <em>q</em>?`,graphSVG:null,tableHTML:`<table class="q-table"><thead><tr><th><em>x</em></th><th><em>y</em></th></tr></thead><tbody><tr><td>12</td><td>95</td></tr><tr><td>16</td><td>123</td></tr><tr><td>19</td><td>144</td></tr></tbody></table>`,choices:[{letter:"A",html:'(&minus;<span class="frac"><span class="fnum">19</span><span class="fden">7</span></span>, 0)'},{letter:"B",html:"(&minus;2, 0)"},{letter:"C",html:'(&minus;<span class="frac"><span class="fnum">15</span><span class="fden">7</span></span>, 0)'},{letter:"D",html:'(&minus;<span class="frac"><span class="fnum">11</span><span class="fden">5</span></span>, 0)'}],points:1},
-  {number:14,type:"mcq",text:`Line <em>p</em> is defined by <em>y</em> = &minus;<span class="frac"><span class="fnum">11</span><span class="fden">3</span></span><em>x</em> &minus; 8. Line <em>q</em> is parallel to line <em>p</em> in the <em>xy</em>-plane. What is the slope of line <em>q</em>?`,graphSVG:null,tableHTML:null,choices:[{letter:"A",html:"&minus;8"},{letter:"B",html:'&minus;<span class="frac"><span class="fnum">11</span><span class="fden">3</span></span>'},{letter:"C",html:'&minus;<span class="frac"><span class="fnum">3</span><span class="fden">11</span></span>'},{letter:"D",html:'<span class="frac"><span class="fnum">3</span><span class="fden">11</span></span>'}],points:1},
-  {number:15,type:"mcq",text:`In the <em>xy</em>-plane, line <em>k</em> passes through the points (0, 14) and (3, 29). Which equation defines line <em>k</em>?`,graphSVG:null,tableHTML:null,choices:[{letter:"A",html:'<em>y</em> = <span class="frac"><span class="fnum">1</span><span class="fden">5</span></span><em>x</em> + 14'},{letter:"B",html:"<em>y</em> = 5<em>x</em> + 14"},{letter:"C",html:"<em>y</em> = 14<em>x</em> + 5"},{letter:"D",html:"<em>y</em> = 5<em>x</em> + 29"}],points:1},
-  {number:16,type:"mcq",text:`If the graph of 12<em>x</em> + 15<em>y</em> = 180 is shifted up 8 units in the <em>xy</em>-plane, what is the <em>y</em>-intercept of the resulting graph?`,graphSVG:null,tableHTML:null,choices:[{letter:"A",html:"(0, 4)"},{letter:"B",html:"(0, 12)"},{letter:"C",html:"(0, 20)"},{letter:"D",html:"(0, 28)"}],points:1},
-  {number:17,type:"mcq",text:`Which of the following is an equation of the graph shown in the <em>xy</em>-plane?`,
-    graphSVG:'<svg width="280" height="240" viewBox="0 0 280 240" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:16px auto;"><g stroke="#e0ddd6" stroke-width="0.7"><line x1="60" y1="20" x2="60" y2="210"/><line x1="90" y1="20" x2="90" y2="210"/><line x1="120" y1="20" x2="120" y2="210"/><line x1="150" y1="20" x2="150" y2="210"/><line x1="180" y1="20" x2="180" y2="210"/><line x1="210" y1="20" x2="210" y2="210"/><line x1="240" y1="20" x2="240" y2="210"/><line x1="30" y1="180" x2="255" y2="180"/><line x1="30" y1="150" x2="255" y2="150"/><line x1="30" y1="120" x2="255" y2="120"/><line x1="30" y1="90" x2="255" y2="90"/><line x1="30" y1="60" x2="255" y2="60"/></g><line x1="30" y1="10" x2="30" y2="215" stroke="#333" stroke-width="1.5"/><line x1="25" y1="210" x2="258" y2="210" stroke="#333" stroke-width="1.5"/><polygon points="30,10 26,20 34,20" fill="#333"/><polygon points="258,210 248,206 248,214" fill="#333"/><text x="262" y="214" font-size="11" font-family="serif" font-style="italic" fill="#333">x</text><text x="22" y="8" font-size="11" font-family="serif" font-style="italic" fill="#333">y</text><text x="15" y="222" font-size="10" fill="#555">O</text><text x="56" y="224" font-size="10" fill="#555">1</text><text x="86" y="224" font-size="10" fill="#555">2</text><text x="116" y="224" font-size="10" fill="#555">3</text><text x="146" y="224" font-size="10" fill="#555">4</text><text x="176" y="224" font-size="10" fill="#555">5</text><text x="206" y="224" font-size="10" fill="#555">6</text><text x="236" y="224" font-size="10" fill="#555">7</text><text x="14" y="183" font-size="10" fill="#555">1</text><text x="14" y="153" font-size="10" fill="#555">2</text><text x="14" y="123" font-size="10" fill="#555">3</text><text x="14" y="93" font-size="10" fill="#555">4</text><text x="14" y="63" font-size="10" fill="#555">5</text><line x1="30" y1="150" x2="210" y2="210" stroke="#1a1916" stroke-width="2.2" stroke-linecap="round"/></svg>',
-    tableHTML:null,choices:[{letter:"A",html:'<em>y</em> = &minus;3<em>x</em> + 2'},{letter:"B",html:'<em>y</em> = &minus;<span class="frac"><span class="fnum">1</span><span class="fden">3</span></span><em>x</em> + 2'},{letter:"C",html:'<em>y</em> = <span class="frac"><span class="fnum">1</span><span class="fden">3</span></span><em>x</em> + 2'},{letter:"D",html:'<em>y</em> = &minus;3<em>x</em> + 6'}],points:1},
-  {number:18,type:"open",text:`In the <em>xy</em>-plane, line <em>t</em> intersects the <em>y</em>-axis at the point (0, 12) and passes through the point (6, 42). If the point (14, <em>c</em>) lies on line <em>t</em>, what is the value of <em>c</em>?`,graphSVG:null,tableHTML:null,choices:null,points:1}
+  {number:1,type:"open",text:`A water pump removes water from a flooded basement at a constant rate of 65 gallons per minute. At what rate, in gallons per hour, does the pump remove the water?`,graphSVG:null,tableHTML:null,choices:null,points:1},
+  {number:2,type:"open",text:`<span class="math-block"><em>x</em> + 4<em>y</em> = 38</span><span class="math-block"><em>y</em> = 3</span>If (<em>x</em>, <em>y</em>) is the solution to the given system of equations, what is the value of <em>x</em>?`,graphSVG:null,tableHTML:null,choices:null,points:1},
+  {number:3,type:"open",text:`<span class="math-block">14<em>z</em> &minus; 13<em>z</em> &minus; 55 = 92</span>What value of <em>z</em> is the solution to the given equation?`,graphSVG:null,tableHTML:null,choices:null,points:1},
+  {number:4,type:"mcq",text:`Each face of a fair 20-sided die is labeled with a number from 1 through 20, with a different number appearing on each face. If the die is rolled one time, what is the probability of rolling a 15?`,graphSVG:null,tableHTML:null,choices:[{letter:"A",html:'<span class="frac"><span class="fnum">5</span><span class="fden">20</span></span>'},{letter:"B",html:'<span class="frac"><span class="fnum">1</span><span class="fden">20</span></span>'},{letter:"C",html:'<span class="frac"><span class="fnum">15</span><span class="fden">20</span></span>'},{letter:"D",html:'<span class="frac"><span class="fnum">19</span><span class="fden">20</span></span>'}],points:1},
+  {number:5,type:"mcq",text:`The graph above displays the total volume of water <em>v</em>, in gallons, pumped by a machine <em>t</em> minutes after it starts working. Which of the following equations correctly relates <em>v</em> and <em>t</em>?`,graphSVG:"<svg width=\"300\" height=\"290\" viewBox=\"0 0 300 290\" xmlns=\"http://www.w3.org/2000/svg\" style=\"display:block;margin:12px auto 18px;\">\n  <g stroke=\"#e0ddd6\" stroke-width=\"0.9\">\n    <line x1=\"70\" y1=\"30\" x2=\"70\" y2=\"220\"/>\n    <line x1=\"100\" y1=\"30\" x2=\"100\" y2=\"220\"/>\n    <line x1=\"130\" y1=\"30\" x2=\"130\" y2=\"220\"/>\n    <line x1=\"160\" y1=\"30\" x2=\"160\" y2=\"220\"/>\n    <line x1=\"190\" y1=\"30\" x2=\"190\" y2=\"220\"/>\n    <line x1=\"220\" y1=\"30\" x2=\"220\" y2=\"220\"/>\n    <line x1=\"40\" y1=\"190\" x2=\"235\" y2=\"190\"/>\n    <line x1=\"40\" y1=\"160\" x2=\"235\" y2=\"160\"/>\n    <line x1=\"40\" y1=\"130\" x2=\"235\" y2=\"130\"/>\n    <line x1=\"40\" y1=\"100\" x2=\"235\" y2=\"100\"/>\n    <line x1=\"40\" y1=\"70\" x2=\"235\" y2=\"70\"/>\n    <line x1=\"40\" y1=\"40\" x2=\"235\" y2=\"40\"/>\n  </g>\n  <line x1=\"40\" y1=\"20\" x2=\"40\" y2=\"225\" stroke=\"#333\" stroke-width=\"1.6\"/>\n  <line x1=\"35\" y1=\"220\" x2=\"240\" y2=\"220\" stroke=\"#333\" stroke-width=\"1.6\"/>\n  <polygon points=\"40,20 36,30 44,30\" fill=\"#333\"/>\n  <polygon points=\"240,220 230,216 230,224\" fill=\"#333\"/>\n  <text x=\"244\" y=\"225\" font-size=\"12\" font-family=\"serif\" font-style=\"italic\" fill=\"#333\">x</text>\n  <text x=\"31\" y=\"18\" font-size=\"12\" font-family=\"serif\" font-style=\"italic\" fill=\"#333\">y</text>\n  <text x=\"26\" y=\"234\" font-size=\"10\" fill=\"#555\">O</text>\n  <text x=\"67\" y=\"236\" font-size=\"10\" fill=\"#555\">1</text>\n  <text x=\"97\" y=\"236\" font-size=\"10\" fill=\"#555\">2</text>\n  <text x=\"127\" y=\"236\" font-size=\"10\" fill=\"#555\">3</text>\n  <text x=\"157\" y=\"236\" font-size=\"10\" fill=\"#555\">4</text>\n  <text x=\"187\" y=\"236\" font-size=\"10\" fill=\"#555\">5</text>\n  <text x=\"16\" y=\"193\" font-size=\"10\" fill=\"#555\">4</text>\n  <text x=\"12\" y=\"163\" font-size=\"10\" fill=\"#555\">8</text>\n  <text x=\"7\" y=\"133\" font-size=\"10\" fill=\"#555\">12</text>\n  <text x=\"7\" y=\"103\" font-size=\"10\" fill=\"#555\">16</text>\n  <text x=\"7\" y=\"73\" font-size=\"10\" fill=\"#555\">20</text>\n  <text transform=\"translate(11,170) rotate(-90)\" font-size=\"11\" fill=\"#444\">Volume (gallons)</text>\n  <text x=\"96\" y=\"266\" font-size=\"11\" fill=\"#444\">Time (minutes)</text>\n  <line x1=\"40\" y1=\"220\" x2=\"190\" y2=\"70\" stroke=\"#1a1916\" stroke-width=\"2.4\" stroke-linecap=\"round\"/>\n  <circle cx=\"70\" cy=\"190\" r=\"3\" fill=\"#1a1916\"/>\n  <circle cx=\"100\" cy=\"160\" r=\"3\" fill=\"#1a1916\"/>\n  <circle cx=\"130\" cy=\"130\" r=\"3\" fill=\"#1a1916\"/>\n  <circle cx=\"160\" cy=\"100\" r=\"3\" fill=\"#1a1916\"/>\n  <circle cx=\"190\" cy=\"70\" r=\"3\" fill=\"#1a1916\"/>\n</svg>",tableHTML:null,choices:[{letter:"A",html:"<em>v</em> = 4<em>t</em> + 4"},{letter:"B",html:'<em>v</em> = <span class="frac"><span class="fnum">1</span><span class="fden">4</span></span><em>t</em>'},{letter:"C",html:"<em>v</em> = <em>t</em> + 4"},{letter:"D",html:"<em>v</em> = 4<em>t</em>"}],points:1},
+  {number:6,type:"mcq",text:`The total height, in inches, of <em>n</em> identical stacked boxes is <em>h</em>. Which expression represents the total height, in inches, of 53<em>n</em> of these boxes?`,graphSVG:null,tableHTML:null,choices:[{letter:"A",html:'<span class="frac"><span class="fnum"><em>h</em></span><span class="fden">53</span></span>'},{letter:"B",html:"53 &minus; <em>h</em>"},{letter:"C",html:"53<em>h</em>"},{letter:"D",html:"53 + <em>h</em>"}],points:1},
+  {number:7,type:"open",text:`According to a model, the length, in inches, of a specific species of trout can be estimated by adding 1.2 to 2.5 times the age of the trout, in years. According to the model, what would be the length, in inches, of a trout that is 1.6 years old?`,graphSVG:null,tableHTML:null,choices:null,points:1},
+  {number:8,type:"mcq",text:`From a population of 80,000 registered voters, 2,000 were chosen at random and surveyed about a proposed city park renovation. Based on the survey, it is estimated that 24% of voters in the population support the renovation, with an associated margin of error of 2%. Based on these results, which of the following is a plausible value for the total number of voters in the population who support the proposed renovation?`,graphSVG:null,tableHTML:null,choices:[{letter:"A",html:"480"},{letter:"B",html:"19,500"},{letter:"C",html:"1,520"},{letter:"D",html:"61,000"}],points:1},
+  {number:9,type:"open",text:`The function <em>g</em> is defined by <em>g</em>(<em>x</em>) = 5<em>x</em> + <em>c</em>(<em>x</em> + 4), where <em>c</em> is a constant, and <em>g</em>(2) = 46. What is the value of <em>g</em>(5)?`,graphSVG:null,tableHTML:null,choices:null,points:1},
+  {number:10,type:"open",text:`<span class="math-block">112, 118, 125, 131, 139, 140, 175</span>What is the range of the <em>r</em> values shown?`,graphSVG:null,tableHTML:null,choices:null,points:1},
+  {number:11,type:"mcq",text:`At how many points do the graphs of the equations <em>y</em> = 15<em>x</em> &minus; 7 and <em>y</em> = 3<em>x</em> + 12 intersect in the <em>xy</em>-plane?`,graphSVG:null,tableHTML:null,choices:[{letter:"A",html:"15"},{letter:"B",html:"1"},{letter:"C",html:"0"},{letter:"D",html:"2"}],points:1},
+  {number:12,type:"mcq",text:`Which of the following speeds is equivalent to 45 miles per hour? (1 mile = 5,280 feet)`,graphSVG:null,tableHTML:null,choices:[{letter:"A",html:"88 feet per second"},{letter:"B",html:"31 feet per second"},{letter:"C",html:"660 feet per second"},{letter:"D",html:"66 feet per second"}],points:1},
+  {number:13,type:"mcq",text:`<span class="math-block"><em>y</em> = 4<em>x</em></span><span class="math-block">3<em>x</em> + <em>y</em> = 35</span>The solution to the given system of equations is (<em>x</em>, <em>y</em>). What is the value of 7<em>x</em>?`,graphSVG:null,tableHTML:null,choices:[{letter:"A",html:"20"},{letter:"B",html:"42"},{letter:"C",html:"35"},{letter:"D",html:"5"}],points:1},
+  {number:14,type:"mcq",text:`The table above shows the amount of protein in two foods and the cost of each food. Based on the table, what is the ratio of the cost per gram of protein in an energy bar to the cost per gram of protein in a protein shake?`,graphSVG:null,tableHTML:"<table class=\"q-table\"><thead><tr><th style=\"min-width:180px;text-align:left\">Food</th><th>Protein</th><th>Cost</th></tr></thead><tbody><tr><td style=\"text-align:left\">1 energy bar</td><td>12 grams</td><td>$1.80</td></tr><tr><td style=\"text-align:left\">1 protein shake</td><td>20 grams</td><td>$2.00</td></tr></tbody></table>",choices:[{letter:"A",html:"2 : 3"},{letter:"B",html:"3 : 2"},{letter:"C",html:"9 : 10"},{letter:"D",html:"3 : 5"}],points:1},
+  {number:15,type:"open",text:`<span class="math-block">16.42<em>x</em> + 13.15<em>y</em> = 575</span>A coffee shop owner purchased pounds of Ethiopian coffee and pounds of Sumatran coffee, which cost a total of $575. The given equation represents the relationship between the number of pounds of Ethiopian coffee, <em>x</em>, and the number of pounds of Sumatran coffee, <em>y</em>, purchased. How much more, in dollars, did a pound of Ethiopian coffee cost than a pound of Sumatran coffee?`,graphSVG:null,tableHTML:null,choices:null,points:1},
+  {number:16,type:"mcq",text:`The value of <em>y</em> is 1.68 times 200. The value of <em>y</em> is what percent greater than 200?`,graphSVG:null,tableHTML:null,choices:[{letter:"A",html:"168"},{letter:"B",html:"268"},{letter:"C",html:"68"},{letter:"D",html:"16.8"}],points:1},
+  {number:17,type:"open",text:`A model predicts that a certain bamboo plant was 64 inches tall when it was first studied and that the plant grew 4 inches per day during a growth spurt. This model is defined by an equation in the form <em>f</em>(<em>d</em>) = <em>a</em> + <em>b</em><em>d</em>, where <em>f</em>(<em>d</em>) is the predicted height, in inches, of the plant <em>d</em> days after the study began, and <em>a</em> and <em>b</em> are constants. What is the value of <em>b</em>?`,graphSVG:null,tableHTML:null,choices:null,points:1},
+  {number:18,type:"mcq",text:`A consumer research firm recently surveyed 2,400 registered voters who were selected at random from a specific state and asked each of the voters, &quot;Do you support the proposed legislation to increase funding for public parks?&quot; Of those surveyed, 56 percent responded that they supported the legislation. Based on the results of the survey, which of the following statements must be true?<br><br>I. Of all registered voters in the state, 56 percent support the proposed legislation.<br>II. If another 2,400 registered voters selected at random from the state were surveyed, 56 percent of them would report they support the legislation.<br>III. If 2,400 registered voters selected at random from a neighboring state were surveyed, 56 percent of them would report they support the legislation.`,graphSVG:null,tableHTML:null,choices:[{letter:"A",html:"None"},{letter:"B",html:"II and III only"},{letter:"C",html:"I and II only"},{letter:"D",html:"I only"}],points:1},
+  {number:19,type:"mcq",text:`A manufacturing plant that produces electric scooters calculates its total weekly production cost, in dollars, by adding its fixed weekly overhead costs, in dollars, to the total variable costs associated with building the scooters. The equation 38,000 = 210<em>n</em> + 5,400 represents this situation for a week where <em>n</em> scooters are built. Which statement is the best interpretation of 210<em>n</em> in this context?`,graphSVG:null,tableHTML:null,choices:[{letter:"A",html:"The total weekly production cost, in dollars"},{letter:"B",html:"The total variable cost, in dollars, associated with building <em>n</em> scooters"},{letter:"C",html:"The variable cost, in dollars, to build each scooter"},{letter:"D",html:"The fixed weekly overhead costs, in dollars"}],points:1},
+  {number:20,type:"mcq",text:`The table below summarizes the number of laptops and tablets sold during the morning and afternoon shifts over a busy weekend. If one of the sales involving a laptop is selected at random, what is the probability that the sale occurred in the afternoon?`,graphSVG:null,tableHTML:"<table class=\"q-table\"><thead><tr><th style=\"min-width:130px\"></th><th>Laptop</th><th>Tablet</th><th>Total</th></tr></thead><tbody><tr><td style=\"text-align:left\">Morning</td><td>18</td><td>15</td><td>33</td></tr><tr><td style=\"text-align:left\">Afternoon</td><td>45</td><td>25</td><td>70</td></tr><tr><td style=\"text-align:left\">Total</td><td>63</td><td>40</td><td>103</td></tr></tbody></table>",choices:[{letter:"A",html:'<span class="frac"><span class="fnum">9</span><span class="fden">14</span></span>'},{letter:"B",html:'<span class="frac"><span class="fnum">45</span><span class="fden">103</span></span>'},{letter:"C",html:'<span class="frac"><span class="fnum">2</span><span class="fden">7</span></span>'},{letter:"D",html:'<span class="frac"><span class="fnum">5</span><span class="fden">7</span></span>'}],points:1},
+  {number:21,type:"mcq",text:`<span class="math-block"><em>y</em> = <em>x</em><sup>2</sup> &minus; 6<em>x</em> + 11</span><span class="math-block"><em>y</em> = <em>a</em><em>x</em> + 2</span>In the system of equations above, <em>a</em> is a constant. If the system has exactly one solution, what is the sum of the possible values of <em>a</em>?`,graphSVG:null,tableHTML:null,choices:[{letter:"A",html:"6"},{letter:"B",html:"&minus;6"},{letter:"C",html:"0"},{letter:"D",html:"&minus;12"}],points:1},
+  {number:22,type:"mcq",text:`In a survey regarding digital media consumption, 1,250 randomly selected US adults were asked about their video streaming frequency and subscription type. The data are summarized in the table above. Based on the data from the study, an estimate of the percent of US adults who are classified as &quot;High&quot; frequency streamers is 42% and the associated margin of error is 4%. Which of the following is a correct statement based on the given margin of error?`,graphSVG:null,tableHTML:"<table class=\"q-table\"><thead><tr><th style=\"min-width:200px;text-align:left\">Streaming Frequency</th><th>Ad-Supported Plan</th><th>Ad-Free Plan</th><th>Total</th></tr></thead><tbody><tr><td style=\"text-align:left\">Low</td><td>150</td><td>150</td><td>300</td></tr><tr><td style=\"text-align:left\">Moderate</td><td>200</td><td>225</td><td>425</td></tr><tr><td style=\"text-align:left\">High</td><td>300</td><td>225</td><td>525</td></tr><tr><td style=\"text-align:left\">Total</td><td>650</td><td>600</td><td>1,250</td></tr></tbody></table>",choices:[{letter:"A",html:'It is not possible that the percent of all US adults who are &quot;High&quot; frequency streamers is greater than 46%.'},{letter:"B",html:'It is doubtful that the percent of all US adults who are &quot;High&quot; frequency streamers is 32%.'},{letter:"C",html:'The percent of all US adults who are &quot;High&quot; frequency streamers is exactly 46%.'},{letter:"D",html:'Approximately 4% of the participants classified as &quot;High&quot; frequency streamers were likely misclassified.'}],points:1},
+  {number:23,type:"open",text:`On Tuesday, a manufacturing plant produced 18 fewer than 4 times the number of units produced on Monday. On Monday and Tuesday combined, the plant produced 497 units. How many units did the plant produce on Monday?`,graphSVG:null,tableHTML:null,choices:null,points:1},
+  {number:24,type:"mcq",text:`The mean mass of the 12 rock samples that a geologist collected for a study is 18.4 ounces. After one of the samples is removed from the collection, the mean mass of the remaining samples is reduced to 17.5 ounces. What is the mass, in ounces, of the sample that was removed?`,graphSVG:null,tableHTML:null,choices:[{letter:"A",html:"9.9"},{letter:"B",html:"0.9"},{letter:"C",html:"10.8"},{letter:"D",html:"28.3"}],points:1},
+  {number:25,type:"mcq",text:`A management consultant conducted a survey to assess whether offering remote work options improves employee job satisfaction. For the survey, the consultant selected a random sample of 120 employees from the complete staff list of one specific branch of a large international technology firm. The results indicated a strong positive correlation between the number of remote work days and reported job satisfaction. To which of the following groups can the results of this survey be most accurately generalized?`,graphSVG:null,tableHTML:null,choices:[{letter:"A",html:"The 120 employees who participated in the survey"},{letter:"B",html:"All employees of the international technology firm"},{letter:"C",html:"All employees in the technology industry"},{letter:"D",html:"All employees at the specific branch of the firm"}],points:1}
 ];
 
 /* ══════════════════════════════════════════
    ANSWERS + ACCESS CODE
 ══════════════════════════════════════════ */
 function _d(s){try{return atob(s.split('').reverse().join(''));}catch(e){return '';}}
-const _answers=(function(){return[_d("NTQ=".split('').reverse().join('')),_d("Qg==".split('').reverse().join('')),_d("RA==".split('').reverse().join('')),_d("Qw==".split('').reverse().join('')),_d("QQ==".split('').reverse().join('')),_d("Qg==".split('').reverse().join('')),_d("QQ==".split('').reverse().join('')),_d("RA==".split('').reverse().join('')),_d("Mzg=".split('').reverse().join('')),_d("Qg==".split('').reverse().join('')),_d("Ny8yMw==".split('').reverse().join('')),_d("LTEvOA==".split('').reverse().join('')),_d("Qw==".split('').reverse().join('')),_d("Qg==".split('').reverse().join('')),_d("Qg==".split('').reverse().join('')),_d("Qw==".split('').reverse().join('')),_d("Qg==".split('').reverse().join('')),_d("ODI=".split('').reverse().join(''))];})();
-const _ac = _d("=YjMwITbxg2Y");
+const _answers = [
+  "3900",
+  "26",
+  "147",
+  "B",
+  "D",
+  "C",
+  "5.2",
+  "B",
+  "79",
+  "63",
+  "B",
+  "D",
+  "C",
+  "B",
+  "3.27",
+  "C",
+  "4",
+  "A",
+  "B",
+  "D",
+  "D",
+  "B",
+  "103",
+  "D",
+  "D"
+];
+const _ac = _d("zITMu9Wa0FWdsFmdlFGazF2c");
 
 /* ══════════════════════════════════════════
    STATE
@@ -777,7 +966,7 @@ let studentName = "", currentIndex = 0;
 let answers = {}, crossedOut = {}, markedForReview = new Set(), savedQHTML = {};
 let timerSeconds = EXAM_DURATION_SECONDS, timerInterval = null;
 let submitted = false, lastEarned = 0, lastTotal = 0;
-let timerHidden = false, desmosCalc = null, calcOpen = false;
+let timerHidden = false, desmosCalc = null, desmosFrame = null, calcOpen = false;
 let paneResizing = false, paneStartX = 0, paneStartW = 0;
 let activeRange = null;
 
@@ -787,9 +976,7 @@ let activeRange = null;
 function saveSession(){try{const c={};for(const[k,v]of Object.entries(crossedOut))c[k]=[...v];localStorage.setItem(LS_KEY,JSON.stringify({studentName,answers,timerSeconds,submitted,crossedOut:c,markedForReview:[...markedForReview],savedQHTML}));}catch(e){}}
 function loadSession(){try{const r=localStorage.getItem(LS_KEY);return r?JSON.parse(r):null;}catch(e){return null;}}
 function clearSession(){try{localStorage.removeItem(LS_KEY);}catch(e){}}
-
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
-
 window.addEventListener('load',()=>{const s=loadSession();if(s&&!s.submitted)document.getElementById('resume-banner').style.display='block';});
 
 /* ══════════════════════════════════════════
@@ -860,7 +1047,6 @@ function renderQuestion(){
     else{btnNext.textContent='Next →';btnNext.onclick=nextQuestion;btnNext.classList.remove('last-q');}
   }
 }
-
 function saveCurrentQHTML(){const qc=document.getElementById('question-content');if(qc){savedQHTML[currentIndex]=qc.innerHTML;saveSession();}}
 
 /* ══════════════════════════════════════════
@@ -871,7 +1057,6 @@ function renderAnswerArea(){
   const ansEl=document.getElementById('answer-area');if(!ansEl)return;
   if(q.type==='mcq'){
     const co=crossedOut[currentIndex]||new Set();
-    // Use a div container (not ul) so cross-out buttons sit outside li
     let html='<div class="bb-choices">';
     q.choices.forEach(c=>{
       const isSel=answers[currentIndex]===c.letter;
@@ -961,24 +1146,103 @@ function closeDirections(){document.getElementById('dir-overlay').classList.add(
 function toggleCalculator(){
   calcOpen=!calcOpen;
   const pane=document.getElementById('calc-pane'),divider=document.getElementById('pane-divider'),btn=document.getElementById('calc-toggle-btn');
-  if(calcOpen){pane.classList.remove('hidden');divider.classList.remove('hidden');btn.classList.add('active-tool');if(!desmosCalc)loadDesmos();}
-  else{pane.classList.add('hidden');divider.classList.add('hidden');btn.classList.remove('active-tool');}
+  if(calcOpen){
+    pane.classList.remove('hidden');divider.classList.remove('hidden');btn.classList.add('active-tool');
+    if(!desmosCalc&&!desmosFrame)loadDesmos();else resizeDesmosFrame();
+  }else{
+    pane.classList.add('hidden');divider.classList.add('hidden');btn.classList.remove('active-tool');
+  }
 }
 function loadDesmos(){
   const wrap=document.getElementById('desmos-wrap');
-  wrap.innerHTML='<div style="height:100%;display:flex;align-items:center;justify-content:center;color:#6b7280;font-size:.88rem;">Loading calculator…</div>';
-  if(window.Desmos){initDesmos();return;}
-  const s=document.createElement('script');
-  s.src='https://www.desmos.com/api/v1.9/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6';
-  s.onload=initDesmos;
-  s.onerror=()=>{wrap.innerHTML='<div style="height:100%;display:flex;align-items:center;justify-content:center;color:#c41c1c;font-size:.85rem;padding:20px;text-align:center;">⚠ Calculator could not be loaded.<br>Check your connection.</div>';};
-  document.head.appendChild(s);
+  wrap.innerHTML='';
+  desmosFrame=document.createElement('iframe');
+  desmosFrame.title='Desmos Calculator';
+  desmosFrame.setAttribute('aria-label','Desmos Calculator');
+  desmosFrame.setAttribute('loading','eager');
+  desmosFrame.referrerPolicy='no-referrer';
+  desmosFrame.style.width='100%';
+  desmosFrame.style.height='100%';
+  desmosFrame.style.border='0';
+  desmosFrame.style.display='block';
+  desmosFrame.style.background='#ffffff';
+  wrap.appendChild(desmosFrame);
+
+  const doc=desmosFrame.contentDocument;
+  if(!doc){
+    wrap.innerHTML='<div style="height:100%;display:flex;align-items:center;justify-content:center;color:#c41c1c;font-size:.82rem;">Calculator could not be loaded.</div>';
+    desmosFrame=null;
+    return;
+  }
+
+  doc.open();
+  doc.write(`<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Desmos Calculator</title>
+<style>
+  html,body{
+    margin:0;
+    padding:0;
+    width:100%;
+    height:100%;
+    background:#ffffff;
+    overflow:hidden;
+  }
+  #desmos-root{
+    width:100%;
+    height:100%;
+  }
+  .loading,.error{
+    height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:20px;
+    color:#6b7280;
+    font:14px Arial,sans-serif;
+  }
+  .error{color:#c41c1c;}
+</style>
+</head>
+<body>
+<div id="desmos-root"><div class="loading">Loading calculator…</div></div>
+</body>
+</html>`);
+  doc.close();
+
+  const script=doc.createElement('script');
+  script.src='https://www.desmos.com/api/v1.9/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6';
+  script.onload=()=>{
+    try{
+      const root=doc.getElementById('desmos-root');
+      root.innerHTML='';
+      desmosCalc=desmosFrame.contentWindow.Desmos.GraphingCalculator(root,{
+        keypad:true,
+        settingsMenu:false,
+        expressionsTopbar:true
+      });
+      resizeDesmosFrame();
+    }catch(e){
+      rootError('Failed to initialize.');
+    }
+  };
+  script.onerror=()=>rootError('Calculator could not be loaded. Check your connection.');
+  doc.head.appendChild(script);
+
+  function rootError(message){
+    const root=doc.getElementById('desmos-root');
+    if(root)root.innerHTML='<div class="error">'+message+'</div>';
+  }
 }
-function initDesmos(){
-  if(desmosCalc)return;const wrap=document.getElementById('desmos-wrap');wrap.innerHTML='';
-  try{desmosCalc=Desmos.GraphingCalculator(wrap,{keypad:true,settingsMenu:false,expressionsTopbar:true});}
-  catch(e){wrap.innerHTML='<div style="height:100%;display:flex;align-items:center;justify-content:center;color:#c41c1c;font-size:.85rem;">Failed to initialize.</div>';}
+function resizeDesmosFrame(){
+  if(desmosCalc)try{desmosCalc.resize();}catch(ex){}
 }
+
+window.addEventListener('resize',()=>{ if(calcOpen)resizeDesmosFrame(); });
 
 /* ══════════════════════════════════════════
    PANE RESIZE
@@ -996,7 +1260,7 @@ function doPaneResize(e){
   let newW=paneStartW+(e.clientX-paneStartX);
   newW=Math.max(260,Math.min(main.getBoundingClientRect().width*0.72,newW));
   pane.style.width=newW+'px';pane.style.minWidth='unset';pane.style.maxWidth='unset';
-  if(desmosCalc)try{desmosCalc.resize();}catch(ex){}
+  resizeDesmosFrame();
 }
 function stopPaneResize(){
   paneResizing=false;document.getElementById('pane-divider').classList.remove('dragging');
@@ -1022,14 +1286,12 @@ function handleLogoUpload(event){
 ══════════════════════════════════════════ */
 const hlToolbar=document.getElementById('hl-toolbar');
 let hlToolbarTimeout=null;
-
 function showHlToolbar(x,y){
   hlToolbar.style.left=x+'px';hlToolbar.style.top=y+'px';
   hlToolbar.classList.add('visible');
   clearTimeout(hlToolbarTimeout);hlToolbarTimeout=setTimeout(hideHlToolbar,8000);
 }
 function hideHlToolbar(){hlToolbar.classList.remove('visible');activeRange=null;clearTimeout(hlToolbarTimeout);}
-
 document.addEventListener('mouseup',function(e){
   if(e.target.closest('#hl-toolbar'))return;
   const sel=window.getSelection();
@@ -1058,7 +1320,6 @@ document.addEventListener('mouseup',function(e){
   showHlToolbar(x,Math.max(8,y));
 });
 document.addEventListener('keyup',function(){const sel=window.getSelection();if(!sel||sel.isCollapsed)hideHlToolbar();});
-
 function applyHighlight(color){
   const classMap={yellow:'hl-yellow',blue:'hl-blue',pink:'hl-pink'};
   const cls=classMap[color];if(!cls)return;
@@ -1112,20 +1373,58 @@ function finalSubmit(){
   showScreen('screen-submitted');
 }
 function fmt(s){return Math.floor(s/60)+'m '+(s%60)+'s';}
+function normalizeAnswerValue(v){
+  return String(v??'').trim().replace(/,/g,'').replace(/\u2212/g,'-');
+}
+function parseSimpleNumber(v){
+  const s=normalizeAnswerValue(v).replace(/\s+/g,'');
+  if(/^[-+]?\d+(?:\.\d+)?$/.test(s))return parseFloat(s);
+  if(/^[-+]?\d+\/-?\d+$/.test(s)){
+    const[n,d]=s.split('/').map(Number);
+    if(d!==0)return n/d;
+  }
+  return null;
+}
+function answersMatch(studentAnswer, correctAnswer, type){
+  const sa = String(studentAnswer ?? '').trim();
+  const ca = String(correctAnswer ?? '').trim();
+
+  // blank student answer is never correct
+  if (sa === '') return false;
+
+  if (type === 'mcq') {
+    return sa.toUpperCase() === ca.toUpperCase();
+  }
+
+  const ns = normalizeAnswerValue(sa);
+  const nc = normalizeAnswerValue(ca);
+
+  // extra safety after normalization
+  if (ns === '') return false;
+
+  // exact text match
+  if (ns.toUpperCase() === nc.toUpperCase()) return true;
+
+  // numeric match (so 0.5 and 1/2 can match if needed)
+  const a = parseSimpleNumber(ns);
+  const b = parseSimpleNumber(nc);
+
+  return a !== null && b !== null && Math.abs(a - b) < 1e-9;
+}
 function generateResults(endTime,spent){
   let total=0,earned=0;
-  const qr=questions.map((q,i)=>{const sa=answers[i]||'';const ok=sa.trim().toUpperCase()===_answers[i].trim().toUpperCase();total+=q.points;if(ok)earned+=q.points;return{questionNumber:q.number,type:q.type,pointValue:q.points,studentAnswer:sa,correct:ok};});
+  const qr=questions.map((q,i)=>{const sa=answers[i]||'';const ok=answersMatch(sa,_answers[i],q.type);total+=q.points;if(ok)earned+=q.points;return{questionNumber:q.number,type:q.type,pointValue:q.points,studentAnswer:sa,correct:ok};});
   const jsonData={examTitle:EXAM_TITLE,studentName,submissionDate:endTime.toLocaleDateString(),submissionTime:endTime.toLocaleTimeString(),totalTimeSpent:fmt(spent),score:{earned,total,percentage:((earned/total)*100).toFixed(1)+'%'},questions:qr};
   sendResultsByEmail(jsonData,earned,total);return{earned,total};
 }
 function sendResultsByEmail(jsonData,earned,total){
   const el=document.getElementById('email-status');
   if(EMAILJS_PUBLIC_KEY==="YOUR_PUBLIC_KEY"){el.className='email-status failed';el.textContent='⚠ EmailJS not configured.';return;}
-  el.className='email-status sending';el.textContent='📤 Sending results to teacher…';
+  el.className='email-status sending';el.textContent='Sending results to teacher…';
   const SECRET="LEVAL2025",ts=Date.now(),token=btoa(SECRET+"|"+studentName+"|"+ts).slice(0,20);
   emailjs.send(EMAILJS_SERVICE_ID,EMAILJS_TEMPLATE_ID,{to_email:RECIPIENT_EMAIL,subject:'✅ [VERIFIED] '+EXAM_TITLE+' — '+studentName+' ('+earned+'/'+total+')',student_name:studentName,score:earned+' / '+total+' ('+((earned/total)*100).toFixed(1)+'%)',exam_date:jsonData.submissionDate+' at '+jsonData.submissionTime,time_spent:jsonData.totalTimeSpent,results_json:JSON.stringify(jsonData,null,2),verification:'🔐 Token: '+token+' | Starts with: '+SECRET.slice(0,3)+'***'})
-    .then(()=>{el.className='email-status sent';el.textContent='✓ Results emailed to '+RECIPIENT_EMAIL;})
-    .catch(err=>{el.className='email-status failed';el.textContent='✗ Email failed: '+(err.text||err);});
+    .then(()=>{el.className='email-status sent';el.textContent='Results emailed to Ali';})
+    .catch(err=>{el.className='email-status failed';el.textContent='Email failed: '+(err.text||err);});
 }
 
 /* ══════════════════════════════════════════
@@ -1136,19 +1435,19 @@ function showReview(){
   document.getElementById('review-score-pill').textContent=lastEarned+' / '+lastTotal+' correct';
   questions.forEach((q,i)=>{
     const sa=(answers[i]||'').trim(),ca=_answers[i].trim();
-    const isCorrect=sa.toUpperCase()===ca.toUpperCase(),isSkipped=sa==='';
+    const isCorrect=answersMatch(sa,ca,q.type),isSkipped=sa==='';
     let badgeClass,badgeText;
-    if(isSkipped){badgeClass='skipped';badgeText='⬜ Not Answered';}else if(isCorrect){badgeClass='correct';badgeText='✅ Correct';}else{badgeClass='wrong';badgeText='❌ Incorrect';}
+    if(isSkipped){badgeClass='skipped';badgeText='Not Answered';}else if(isCorrect){badgeClass='correct';badgeText='Correct';}else{badgeClass='wrong';badgeText='Incorrect';}
     let qHtml='';
     if(q.tableHTML)qHtml+=q.tableHTML;if(q.graphSVG)qHtml+=q.graphSVG;qHtml+='<div>'+q.text+'</div>';
     let ansHtml='<div class="review-answers">';
     if(q.type==='mcq'){
-      if(!isSkipped){const chosen=q.choices.find(c=>c.letter===sa);ansHtml+=`<div class="review-answer-row ${isCorrect?'student-correct':'student-wrong'}"><span class="review-ans-icon">${isCorrect?'✅':'❌'}</span><span class="review-ans-label">Your answer:</span><span class="review-ans-value">${sa}${chosen?' — '+chosen.html:''}</span></div>`;}
-      else{ansHtml+=`<div class="review-answer-row skipped-row"><span class="review-ans-icon">⬜</span><span class="review-ans-label">Your answer:</span><span class="review-ans-value" style="color:var(--text-m)">Not answered</span></div>`;}
-      if(!isCorrect){const correct=q.choices.find(c=>c.letter===ca);ansHtml+=`<div class="review-answer-row correct-ans"><span class="review-ans-icon">💡</span><span class="review-ans-label">Correct answer:</span><span class="review-ans-value">${ca}${correct?' — '+correct.html:''}</span></div>`;}
+      if(!isSkipped){const chosen=q.choices.find(c=>c.letter===sa);ansHtml+=`<div class="review-answer-row ${isCorrect?'student-correct':'student-wrong'}"><span class="review-ans-icon" aria-hidden="true"></span><span class="review-ans-label">Your answer:</span><span class="review-ans-value">${sa}${chosen?' — '+chosen.html:''}</span></div>`;}
+      else{ansHtml+=`<div class="review-answer-row skipped-row"><span class="review-ans-icon" aria-hidden="true"></span><span class="review-ans-label">Your answer:</span><span class="review-ans-value" style="color:var(--text-m)">Not answered</span></div>`;}
+      if(!isCorrect){const correct=q.choices.find(c=>c.letter===ca);ansHtml+=`<div class="review-answer-row correct-ans"><span class="review-ans-icon" aria-hidden="true"></span><span class="review-ans-label">Correct answer:</span><span class="review-ans-value">${ca}${correct?' — '+correct.html:''}</span></div>`;}
     }else{
-      ansHtml+=!isSkipped?`<div class="review-answer-row ${isCorrect?'student-correct':'student-wrong'}"><span class="review-ans-icon">${isCorrect?'✅':'❌'}</span><span class="review-ans-label">Your answer:</span><span class="review-ans-value">${sa}</span></div>`:`<div class="review-answer-row skipped-row"><span class="review-ans-icon">⬜</span><span class="review-ans-label">Your answer:</span><span class="review-ans-value" style="color:var(--text-m)">Not answered</span></div>`;
-      if(!isCorrect)ansHtml+=`<div class="review-answer-row correct-ans"><span class="review-ans-icon">💡</span><span class="review-ans-label">Correct answer:</span><span class="review-ans-value">${ca}</span></div>`;
+      ansHtml+=!isSkipped?`<div class="review-answer-row ${isCorrect?'student-correct':'student-wrong'}"><span class="review-ans-icon" aria-hidden="true"></span><span class="review-ans-label">Your answer:</span><span class="review-ans-value">${sa}</span></div>`:`<div class="review-answer-row skipped-row"><span class="review-ans-icon" aria-hidden="true"></span><span class="review-ans-label">Your answer:</span><span class="review-ans-value" style="color:var(--text-m)">Not answered</span></div>`;
+      if(!isCorrect)ansHtml+=`<div class="review-answer-row correct-ans"><span class="review-ans-icon" aria-hidden="true"></span><span class="review-ans-label">Correct answer:</span><span class="review-ans-value">${ca}</span></div>`;
     }
     ansHtml+='</div>';
     const card=document.createElement('div');card.className='review-card';
@@ -1165,5 +1464,6 @@ document.getElementById('nav-overlay').addEventListener('click',function(e){if(e
 document.getElementById('dir-overlay').addEventListener('click',function(e){if(e.target===this)closeDirections();});
 document.getElementById('hl-toolbar').addEventListener('mousedown',e=>e.stopPropagation());
 </script>
+
 </body>
 </html>
